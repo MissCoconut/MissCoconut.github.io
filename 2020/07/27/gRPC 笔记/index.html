@@ -5,43 +5,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 4.2.1">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../../images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../../images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../../images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="../../../../images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="../../../../css/main.css">
 
 
-<link rel="stylesheet" href="lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="../../../../lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
     var CONFIG = {"hostname":"misscoconut.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="椰子小姐的笔记本">
-<meta property="og:url" content="https://misscoconut.github.io/index.html">
+  <meta name="description" content="一、背景知识1.1 RPC 是啥RPC (Remote Procedure Calls) 远程过程调用。 试想这样的场景：客户端应用 A 需要调用一个方法 B，但这个方法 B 的实现在服务端上（另一个进程&#x2F;不同的机器上&#x2F;…）不在同一内存空间里，那客户端应该通过什么样的机制去调用呢？ 比较直接的想法是参考 B&#x2F;S 架构的调用方式，服务端暴露出 Restful 接口，客户端发 http request">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gRPC 笔记">
+<meta property="og:url" content="https://misscoconut.github.io/2020/07/27/gRPC%20%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="椰子小姐的笔记本">
+<meta property="og:description" content="一、背景知识1.1 RPC 是啥RPC (Remote Procedure Calls) 远程过程调用。 试想这样的场景：客户端应用 A 需要调用一个方法 B，但这个方法 B 的实现在服务端上（另一个进程&#x2F;不同的机器上&#x2F;…）不在同一内存空间里，那客户端应该通过什么样的机制去调用呢？ 比较直接的想法是参考 B&#x2F;S 架构的调用方式，服务端暴露出 Restful 接口，客户端发 http request">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/07/24/Sgo2AtmDBPkjd9w.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/26/6CiPu97Apb5rFYa.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/26/kzJE97djvcqiFLf.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/26/eLYGVsoPBcyH6mu.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/26/VW1jJ5bqsrgudia.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-058742b31290c7251fc9b7cb49b72aa6_720w.jpg">
+<meta property="og:image" content="https://i.loli.net/2020/07/26/MScwZTG7iEKaBzx.png">
+<meta property="og:image" content="https://i.loli.net/2020/07/26/w8o4cIUZ1e6mvQB.png">
+<meta property="article:published_time" content="2020-07-26T17:34:33.000Z">
+<meta property="article:modified_time" content="2020-07-26T17:42:59.189Z">
 <meta property="article:author" content="MissCoconut">
+<meta property="article:tag" content="gRPC">
+<meta property="article:tag" content="Protobuf">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/07/24/Sgo2AtmDBPkjd9w.png">
 
-<link rel="canonical" href="https://misscoconut.github.io/">
+<link rel="canonical" href="https://misscoconut.github.io/2020/07/27/gRPC%20%E7%AC%94%E8%AE%B0/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>椰子小姐的笔记本</title>
+  <title>gRPC 笔记 | 椰子小姐的笔记本</title>
   
 
 
@@ -112,22 +127,22 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="index.html" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="../../../../index.html" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-about">
 
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+    <a href="../../../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">4</span></a>
+    <a href="../../../../tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">4</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">3</span></a>
+    <a href="../../../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">3</span></a>
 
   </li>
   </ul>
@@ -147,16 +162,17 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://misscoconut.github.io/2020/07/27/gRPC%20%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="image" content="../../../../images/avatar.png">
       <meta itemprop="name" content="MissCoconut">
       <meta itemprop="description" content="">
     </span>
@@ -165,10 +181,9 @@
       <meta itemprop="name" content="椰子小姐的笔记本">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="2020/07/27/gRPC%20%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">gRPC 笔记</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          gRPC 笔记
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -192,7 +207,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="一、背景知识"><a href="#一、背景知识" class="headerlink" title="一、背景知识"></a>一、背景知识</h2><h3 id="1-1-RPC-是啥"><a href="#1-1-RPC-是啥" class="headerlink" title="1.1 RPC 是啥"></a>1.1 RPC 是啥</h3><p>RPC (Remote Procedure Calls) 远程过程调用。</p>
+        <h2 id="一、背景知识"><a href="#一、背景知识" class="headerlink" title="一、背景知识"></a>一、背景知识</h2><h3 id="1-1-RPC-是啥"><a href="#1-1-RPC-是啥" class="headerlink" title="1.1 RPC 是啥"></a>1.1 RPC 是啥</h3><p>RPC (Remote Procedure Calls) 远程过程调用。</p>
 <p>试想这样的场景：客户端应用 A 需要调用一个方法 B，但这个方法 B 的实现在服务端上（另一个进程/不同的机器上/…）不在同一内存空间里，那客户端应该通过什么样的机制去调用呢？</p>
 <p>比较直接的想法是参考 B/S 架构的调用方式，服务端暴露出 Restful 接口，客户端发 http request 去调用。</p>
 <p>RPC 的过程简单来看可以理解成是对这个操作进行的一层封装，RPC 的核心不在于使用什么协议，目的是在本地调用远程的方法，<strong>这个调用是透明的，会隐藏底层的通讯细节</strong>（不需要直接处理 Socket 通讯或者 HTTP 通讯）。开发人员在使用的时候只需要了解谁在什么位置提供了什么样的远程服务接口即可，并不需要关心底层通信细节和调用过程。</p>
@@ -450,185 +465,74 @@
 </li>
 </ul>
 
-      
     </div>
 
     
     
     
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
+        <div class="reward-container">
+  <div>万物皆有时，比如你我相遇。</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
       
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://misscoconut.github.io/2020/07/14/%E5%8E%8B%E5%8A%9B/">
+      <div style="display: inline-block;">
+        <img src="../../../../images/wechatpay.png" alt="MissCoconut 微信支付">
+        <p>微信支付</p>
+      </div>
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="MissCoconut">
-      <meta itemprop="description" content="">
-    </span>
+  </div>
+</div>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="椰子小姐的笔记本">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="2020/07/14/%E5%8E%8B%E5%8A%9B/" class="post-title-link" itemprop="url">压力管理</a>
-        </h2>
+        
 
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-07-14 01:51:33 / 修改时间：02:26:51" itemprop="dateCreated datePublished" datetime="2020-07-14T01:51:33+08:00">2020-07-14</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="一、起因"><a href="#一、起因" class="headerlink" title="一、起因"></a>一、起因</h1><p>近两个月，巨大的压力和内心的焦虑给自己的工作生活与身心健康上带来了许多困扰。</p>
-<p>面对的压力源既有工作上的，更多的则是来自家庭方面，而且这两方面的压力源，在可预见的未来很长一段时间里并不会消失。</p>
-<p>当下我试图为自己找到一套科学的思维框架去直面压力与焦虑，希望今后面对相同情境时可以省去大量无用的思考，将精力聚焦在更有意义的事情上。</p>
-<h1 id="二、为什么会存在焦虑？"><a href="#二、为什么会存在焦虑？" class="headerlink" title="二、为什么会存在焦虑？"></a>二、为什么会存在焦虑？</h1><p>如果从进化论角度来理解焦虑的话，那么可以说焦虑是人类生存的必备技能。</p>
-<p>远古时期人类依靠打猎生存，祖先们遇到危险时产生紧张焦虑情绪，导致肾上腺素上升，进而心跳加速，注意力集中，反应敏锐，于是才能在恶劣的自然条件中存活下来。反之，那些不会没有产生紧张焦虑情绪的人类早已被淘汰，如今的我们都是在遇到危险情况时会感到紧张焦虑的祖先们的后代。</p>
-<p>焦虑并不是一种毫无可取之处的情绪，适当的压力和焦虑，可以有效的警醒我们面对即将发生的事情。</p>
-<h1 id="三、焦虑的本质是什么？"><a href="#三、焦虑的本质是什么？" class="headerlink" title="三、焦虑的本质是什么？"></a>三、焦虑的本质是什么？</h1><ul>
-<li><p>存在不确定性</p>
-</li>
-<li><p>无法控制事物发展</p>
-</li>
-<li><p>关心在意某件事</p>
-</li>
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>MissCoconut
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="../../../../https:/misscoconut.github.io/2020/07/27/gRPC%20%E7%AC%94%E8%AE%B0/" title="gRPC 笔记">https://misscoconut.github.io/2020/07/27/gRPC 笔记/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="../../../../https:/creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
 </ul>
-<h1 id="四、如何与焦虑共处"><a href="#四、如何与焦虑共处" class="headerlink" title="四、如何与焦虑共处?"></a>四、如何与焦虑共处?</h1><p>既然焦虑是一种非常正常的应激反应，那么试图去消除焦虑似乎并不容易。</p>
-<p>但我们可以从焦虑的本质入手，想办法和焦虑共处，保证我们的工作生活可以正常进行下去。</p>
-<ol>
-<li><p>存在不确定性 –&gt; <strong>评估威胁程度</strong></p>
-<p> 即便不确定的事情，也会存在确定的一面。</p>
-<p> 做好最好的打算和最坏的打算，无论事情朝着哪个方向发展，自己心里有谱，焦虑感会减轻许多。</p>
-</li>
-<li><p>关心在意某件事 –&gt; <strong>正念冥想</strong></p>
-<p> 在陷入极度焦虑的沼泽时使用，将注意力从嘈杂的事物中拯救出来，专注于当下的呼吸上，和身体建立连接，使自己平静下来。</p>
-<p> 生活中的10%取决于发生的事情，而剩下 90%取决于我们对待事物的反应。正念冥想更积极的意义在于当人平静下来后，才能更理智的思考该以怎样的反应去应对当前的事情。</p>
-<p> 相关资源：潮汐 app、喜马拉雅 app 上的课程等等。</p>
-</li>
-<li><p>无法控制事物发展 –&gt; <strong>做正确的事</strong></p>
-<p> 无法控制的事情，不必执着。做自己能控制的正确的事。</p>
-<blockquote>
-<p>When I do good,I feel good,When I do bad,I feed bad.</p>
-</blockquote>
-<p> 按时吃饭，按时睡觉，正常工作，积极锻炼。</p>
-<p> 越是焦虑紧张的时候，越要做按部就班的正确的事情。熟悉的日常节奏会给自己很多安心的感觉。</p>
-</li>
-</ol>
-<p>不管怎样，生活还要继续下去，可能是中国人骨子里的乐观精神吧，我始终愿意相信一切总会好起来的。</p>
+</div>
 
-      
-    </div>
 
-    
-    
-    
       <footer class="post-footer">
-        <div class="post-eof"></div>
+          
+          <div class="post-tags">
+              <a href="../../../../tags/gRPC/" rel="tag"><i class="fa fa-tag"></i> gRPC</a>
+              <a href="../../../../tags/Protobuf/" rel="tag"><i class="fa fa-tag"></i> Protobuf</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="../../14/%E5%8E%8B%E5%8A%9B/" rel="prev" title="压力管理">
+      <i class="fa fa-chevron-left"></i> 压力管理
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
       </footer>
+    
   </article>
   
   
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://misscoconut.github.io/2020/07/12/post/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="MissCoconut">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="椰子小姐的笔记本">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="2020/07/12/post/" class="post-title-link" itemprop="url">把事情做完，然后亮出去</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-07-12 15:55:05 / 修改时间：22:47:08" itemprop="dateCreated datePublished" datetime="2020-07-12T15:55:05+08:00">2020-07-12</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>博客这个事情，从学生时期就想弄，一拖再拖直到现在，已经步入职场三年了。</p>
-<!-- 刚好最近这段时间空闲下来，认真想了下自己为什么会在这件事上拖延这么久？我在逃避什么呢？我所担心的点是真实存在的问题吗？这样反复追问下去，我想我找到了一些答案。 -->
-
-<p>把做的事情亮出去，对我来说是一件蛮有压力的事情。逃避了这么久，并不想再继续安逸下去了。趁现在还算年轻，是时候借着这种压力 push 自己一把。</p>
-<p>这个周末博客准备完毕，给自己定个规矩吧，今后无论工作还是生活，在做的事情无论进展多糟糕，都要把它<strong>做完</strong>，并且要<strong>亮出去</strong>，要去承受被评论的心理压力，从而不断逼迫自己下次做的更好，强制审视自己并做出改变。</p>
-<p>希望自己可以做到专业技术类文章<strong>月更至少一篇</strong>，其他领域知识技能类文章<strong>双月一篇</strong>。</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
   
 
 
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -675,27 +579,28 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、背景知识"><span class="nav-text">一、背景知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-RPC-是啥"><span class="nav-text">1.1 RPC 是啥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-RPC-框架"><span class="nav-text">1.2 RPC  框架</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#服务治理（SOA）"><span class="nav-text">服务治理（SOA）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-RPC-vs-HTTP-Service"><span class="nav-text">1.3 RPC vs HTTP Service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-HTTP-2-协议"><span class="nav-text">1.4 HTTP&#x2F;2 协议</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-1-HTTP-发展历史"><span class="nav-text">1.4.1 HTTP 发展历史</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-2-HTTP-2-0-新特性"><span class="nav-text">1.4.2 HTTP&#x2F;2.0 新特性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、gRPC"><span class="nav-text">二、gRPC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-gRPC-特性"><span class="nav-text">2.1 gRPC 特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-gRPC-核心概念"><span class="nav-text">2.2 gRPC 核心概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-服务调用模式"><span class="nav-text">2.2.1 服务调用模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2-生命周期"><span class="nav-text">2.2.2 生命周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-3-Protobuf"><span class="nav-text">2.2.3 Protobuf</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#支持的数据结构"><span class="nav-text">支持的数据结构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#基本数据类型"><span class="nav-text">基本数据类型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#复杂数据类型"><span class="nav-text">复杂数据类型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#IDL-文件定义"><span class="nav-text">IDL 文件定义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#代码生成"><span class="nav-text">代码生成</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-hello-gRPC"><span class="nav-text">2.3 hello gRPC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-1-服务端-Java"><span class="nav-text">2.3.1 服务端(Java)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#开发环境配置"><span class="nav-text">开发环境配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#接口定义"><span class="nav-text">接口定义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#生成-Java-桩代码"><span class="nav-text">生成 Java 桩代码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#服务端实现"><span class="nav-text">服务端实现</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-2-客户端-Android"><span class="nav-text">2.3.2 客户端(Android)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、安全问题"><span class="nav-text">三、安全问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-服务鉴权"><span class="nav-text">3.1 服务鉴权</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-反序列化"><span class="nav-text">3.2 反序列化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、参考链接"><span class="nav-text">四、参考链接</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="MissCoconut"
-      src="/images/avatar.png">
+      src="../../../../images/avatar.png">
   <p class="site-author-name" itemprop="name">MissCoconut</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/archives/">
+          <a href="../../../../archives/">
         
           <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/tags/">
+            <a href="../../../../tags/">
           
         <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">标签</span></a>
@@ -704,20 +609,20 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/MissCoconut/" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MissCoconut&#x2F;" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+        <a href="../../../../https:/github.com/MissCoconut/" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MissCoconut&#x2F;" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="mailto:selanglexa@gmail.com" title="E-Mail → mailto:selanglexa@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+        <a href="../../../../mailto:selanglexa@gmail.com" title="E-Mail → mailto:selanglexa@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/misscoconut7c00/" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;misscoconut7c00&#x2F;" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i></a>
+        <a href="../../../../https:/twitter.com/misscoconut7c00/" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;misscoconut7c00&#x2F;" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://t.me/MissCoconut/" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;MissCoconut&#x2F;" rel="noopener" target="_blank"><i class="fab fa-telegram fa-fw"></i></a>
+        <a href="../../../../https:/t.me/MissCoconut/" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;MissCoconut&#x2F;" rel="noopener" target="_blank"><i class="fab fa-telegram fa-fw"></i></a>
       </span>
   </div>
   <div class="cc-license motion-element" itemprop="license">
-    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+    <a href="../../../../https:/creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="../../../../images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
   </div>
 
 
@@ -751,7 +656,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">MissCoconut</span>
 </div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  <div class="powered-by">由 <a href="../../../../https:/hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="../../../../https:/theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
         
@@ -768,43 +673,62 @@
   </div>
 
   
-  <script src="lib/anime.min.js"></script>
-  <script src="lib/velocity/velocity.min.js"></script>
-  <script src="lib/velocity/velocity.ui.min.js"></script>
+  <script src="../../../../lib/anime.min.js"></script>
+  <script src="../../../../lib/velocity/velocity.min.js"></script>
+  <script src="../../../../lib/velocity/velocity.ui.min.js"></script>
 
-<script src="js/utils.js"></script>
+<script src="../../../../js/utils.js"></script>
 
-<script src="js/motion.js"></script>
-
-
-<script src="js/schemes/pisces.js"></script>
+<script src="../../../../js/motion.js"></script>
 
 
-<script src="js/next-boot.js"></script>
+<script src="../../../../js/schemes/pisces.js"></script>
 
 
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
+<script src="../../../../js/next-boot.js"></script>
 
 
 
 
   
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
 
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6cfa5e6c3ed6c390a68a',
+      clientSecret: 'eb7f73f819868fdf51abf60f54401b928aa65dbc',
+      repo        : 'MissCoconut.github.io',
+      owner       : 'MissCoconut',
+      admin       : ['MissCoconut'],
+      id          : 'd41d8cd98f00b204e9800998ecf8427e',
+        language: 'zh-Hans',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 </body>
 </html>
