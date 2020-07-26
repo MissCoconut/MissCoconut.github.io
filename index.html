@@ -178,7 +178,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-07-27 01:34:33 / 修改时间：01:42:59" itemprop="dateCreated datePublished" datetime="2020-07-27T01:34:33+08:00">2020-07-27</time>
+              <time title="创建时间：2020-07-27 01:34:33 / 修改时间：01:55:31" itemprop="dateCreated datePublished" datetime="2020-07-27T01:34:33+08:00">2020-07-27</time>
             </span>
 
           
@@ -196,260 +196,14 @@
 <p>试想这样的场景：客户端应用 A 需要调用一个方法 B，但这个方法 B 的实现在服务端上（另一个进程/不同的机器上/…）不在同一内存空间里，那客户端应该通过什么样的机制去调用呢？</p>
 <p>比较直接的想法是参考 B/S 架构的调用方式，服务端暴露出 Restful 接口，客户端发 http request 去调用。</p>
 <p>RPC 的过程简单来看可以理解成是对这个操作进行的一层封装，RPC 的核心不在于使用什么协议，目的是在本地调用远程的方法，<strong>这个调用是透明的，会隐藏底层的通讯细节</strong>（不需要直接处理 Socket 通讯或者 HTTP 通讯）。开发人员在使用的时候只需要了解谁在什么位置提供了什么样的远程服务接口即可，并不需要关心底层通信细节和调用过程。</p>
-<p>RPC 调用过程如下图所示，RPC 对服务调用方屏蔽掉网络请求、消息编码、数据传输等工作，提供一个代理对象给调用方，使服务调用方调用远程方法时如同调用本地方法一样简洁。</p>
-<img src="https://i.loli.net/2020/07/24/Sgo2AtmDBPkjd9w.png"  />
-
-<center>图1.RPC 服务调用过程</center>                                            
-
-<h3 id="1-2-RPC-框架"><a href="#1-2-RPC-框架" class="headerlink" title="1.2 RPC  框架"></a>1.2 RPC  框架</h3><p>提到 RPC 绕不开微服务和分布式，RPC 抽象来看可以归纳为两方面问题：<strong>1.调用方与提供方协议约定问题；</strong> <strong>2.网络传输问题</strong>，解决这两块基本问题后，还得需要工程落地，解决分布式架构下诸如服务发现、负载均衡、限流熔断、保障服务提供方的并发能力、请求方的容错机制等等问题，于是有了 RPC 框架的出现。</p>
-<p><img src="https://i.loli.net/2020/07/26/6CiPu97Apb5rFYa.png" alt="image-20200726003032433"></p>
-<center>图2. RPC 架构概要</center>                    
-
-<p>上图是一个典型的 RPC 框架的基本架构，主要分成四块：</p>
-<ol>
-<li>入口层：动态代理机制在服务提供方包装好服务的接口，暴露给调用方；对调用方提供代理对象，屏蔽其感知远程过程调用；</li>
-<li>集群层：解决分布式场景下的服务发现、节点负载均衡、容错、路由管理等等问题；</li>
-<li>协议层:  约定调用方与提供方数据包的格式，提供反序列化、解压缩等功能支持；</li>
-<li>网络传输: 提供 TCP 长链接传输、HTTP 通信等功能。</li>
-</ol>
-<h4 id="服务治理（SOA）"><a href="#服务治理（SOA）" class="headerlink" title="服务治理（SOA）"></a>服务治理（SOA）</h4><p>服务治理解决什么问题？</p>
-<img src="https://i.loli.net/2020/07/26/kzJE97djvcqiFLf.png" alt="image-20200726140244088" style="zoom: 67%;" />
-
-<center>图3. 服务治理的作用</center>
-
-<ul>
-<li>服务发现机制</li>
-</ul>
-<p>对调用方来说，如何知道服务提供方的地址呢？这里需要借助服务发现机制。</p>
-<p><img src="https://i.loli.net/2020/07/26/eLYGVsoPBcyH6mu.png" alt="image-20200726135501383"></p>
-<center>图4. 服务发现流程</center>
-
-<p>服务提供方向注册中心进行注册，调用方订阅服注册中心；注册中心拿到当前提供方服务的地址后推送给调用方，调用方得到提供方地址后开始进行 P2P 通信。</p>
-<p>类似于 DNS 机制，服务发现和域名换 ip 差不多的流程，那这里为啥不直接用 DNS 呢？因为 DNS 有缓存，无法满足调用方及时感知到提供方的服务的需求。</p>
-<p>其他相关机制暂时略过。</p>
-<h3 id="1-3-RPC-vs-HTTP-Service"><a href="#1-3-RPC-vs-HTTP-Service" class="headerlink" title="1.3 RPC vs HTTP Service"></a>1.3 RPC vs HTTP Service</h3><p>相比于 HTTP 服务，RPC 具有以下优势：</p>
-<ul>
-<li>网络传输方面：基于 TCP 长链接，省去了 HTTP 连接建立过程中的三次握手，提高传输效率；</li>
-<li>传输消息方面：传输的消息序列化成二进制对象，相比于 Restful + json 调用方法，数据包体积减小，节省带宽；</li>
-<li>开发者友好：RPC 牺牲了消息的可读性来提高易用性，对于调用方开发者只需要调用本地接口即可调用远程方法；</li>
-<li>面向服务的封装：成熟的 RPC 框架封装了服务发现、负载均衡、熔断降级等等面向服务的高级特性，单纯使用 HTTP 服务调用则少了这些特性。</li>
-</ul>
-<p>同时，也存在一些劣势：</p>
-<ul>
-<li>数据包可读性差，提高团队成员学习成本；</li>
-<li>交互性单一：只能调用方主动调用服务端方法，在需要服务端下发通知等场景下不适用。</li>
-</ul>
-<p>如何选择 RPC 或 HTTP 服务？</p>
-<ol>
-<li>公司内部给其他业务提供接口时，优先考虑 RPC 服务，使用方为公司外部的服务，优先考虑 HTTP 服务；</li>
-<li>对于消耗特定资源的（例如 GPU/CPU/大内存资源），有特殊依赖的（比如运行环境需要依赖外部的 ffmpeg），集中实现效率比较高的（比如某个业务集中到几台机器，可以使用大内存缓存等）,选 RPC；</li>
-<li>一些经常变化的业务逻辑，依赖很广泛，又需要实现可以收敛且能随时更新，选择 RPC。</li>
-</ol>
-<h3 id="1-4-HTTP-2-协议"><a href="#1-4-HTTP-2-协议" class="headerlink" title="1.4 HTTP/2 协议"></a>1.4 HTTP/2 协议</h3><p>gRPC 框架的网络传输部分依赖 HTTP/2 协议，为下文理解 gRPC，首先来了解一下 HTTP/2 协议。</p>
-<h4 id="1-4-1-HTTP-发展历史"><a href="#1-4-1-HTTP-发展历史" class="headerlink" title="1.4.1 HTTP 发展历史"></a>1.4.1 HTTP 发展历史</h4><ul>
-<li>HTTP/1.0：链接无法复用，每次请求都需要经过三次握手，重新建立连接，增加延迟；</li>
-<li>HTTP/1.1：Headers 中增加<code>keep-alive</code>标识，可以复用一部分连接，但域名分片等情况下，仍需要建立多次连接，耗费资源； </li>
-<li>HTTP/2.0：为提高传输性能，HTTP/2.0 在客户端和服务端之间只建立一个链接(connection)。</li>
-</ul>
-<h4 id="1-4-2-HTTP-2-0-新特性"><a href="#1-4-2-HTTP-2-0-新特性" class="headerlink" title="1.4.2 HTTP/2.0 新特性"></a>1.4.2 HTTP/2.0 新特性</h4><p>HTTP/2.0 协议 2015 年发布，完整的升级涉及到的内容较多，这里只挑部分特性了解一下。</p>
-<ul>
-<li><p>基本概念</p>
-<ul>
-<li>流：流是连接中的一个虚拟信道，可以承载双向的消息；每个流都有一个唯一的整数标识符；</li>
-<li>消息：是指逻辑上的 HTTP 消息，比如请求、响应等，由一或多个帧组成；</li>
-<li>帧：HTTP 2.0 通信的最小单位，每个帧包含帧首部，至少也会标识出当前帧所属的流，承载着特定类型的数据，如 HTTP 首部、负荷，等等</li>
-</ul>
-</li>
-<li><p>二进制传输消息</p>
-<p>HTTP/1.x 的请求包和响应包，都是由起始行、Headers 和 Body 组成，各部分之间以文本换行符分隔，而 <strong>HTTP/2 将请求和响应数据分割为更小的帧，并且采用二进制编码</strong>。</p>
-</li>
-<li><p>多路复用</p>
-<p>针对同一域名只建立一个链接(Connection)，该信道可承载任意数量的双向数据流(Stream)，每个数据流中以消息(Message)的形式读写，一个消息的最小组成单位为帧(Frame)，数据流内的消息可以乱序发送，根据帧头部的流标识可以重排。</p>
-<img src="https://i.loli.net/2020/07/26/VW1jJ5bqsrgudia.jpg" alt="img" style="zoom:67%;" />
-
-<center>图5. 多路复用消息传输示意图</center>
-</li>
-<li><p>Header 压缩</p>
-<p>在 HTTP/1 中，我们使用文本的形式传输 header，在 header 携带 cookie 的情况下，可能每次都需要重复传输几百到几千的字节。</p>
-<p>为了减少这块的资源消耗并提升性能， HTTP/2对这些首部采取了压缩策略：</p>
-<ul>
-<li>HTTP/2在客户端和服务器端使用“首部表”来跟踪和存储之前发送的键－值对，对于相同的数据，不再通过每次请求和响应发送；</li>
-<li>首部表在HTTP/2的连接存续期内始终存在，由客户端和服务器共同渐进地更新;</li>
-<li>每个新的首部键－值对要么被追加到当前表的末尾，要么替换表中之前的值。</li>
-</ul>
-<p>例如下图中的两个请求， 请求一发送了所有的头部字段，第二个请求则只需要发送差异数据，这样可以减少冗余数据，降低开销。</p>
-<img src="https://pic1.zhimg.com/80/v2-058742b31290c7251fc9b7cb49b72aa6_720w.jpg" alt="img" style="zoom: 80%;" />
-
-<center>图6. Header 压缩示意图</center>
-
-</li>
-</ul>
-<h2 id="二、gRPC"><a href="#二、gRPC" class="headerlink" title="二、gRPC"></a>二、gRPC</h2><p>gRPC 是 Google 开源的一套基于 HTTP/2 标准设计的 RPC 框架，由于 HTTP/2 协议带来诸如双向流、流控、头部压缩、单 TCP 连接上的多路复用请求等特性使得 gRPC 在移动设备上表现更出色，更加省点省空间，在实际的移动端业务中 gRPC 框架为主流选择。</p>
-<h3 id="2-1-gRPC-特性"><a href="#2-1-gRPC-特性" class="headerlink" title="2.1 gRPC 特性"></a>2.1 gRPC 特性</h3><ul>
-<li><p>优势</p>
-<ul>
-<li><p>支持多种语言；</p>
-</li>
-<li><p>基于 IDL 文件定义服务，通过 proto3 工具生成指定语言的数据结构、服务端接口以及客户端 Stub；</p>
-</li>
-<li><p>网络通信依赖 Netty 实现的 HTTP/2 协议封装，支持双向流、消息头压缩、单 TCP 的多路复用、服务端推送等特性，这些特性使得 gRPC 在移动端设备上更加省电和节省网络流量；</p>
-</li>
-<li><p>序列化支持 PB（Protocol Buffer）和 JSON，PB 是一种语言无关的高性能序列化框架，基于 HTTP/2 + PB, 保障了 RPC 调用的高性能。</p>
-</li>
-</ul>
-</li>
-<li><p>缺点</p>
-<ul>
-<li>服务治理相关能力缺失，负载均衡和服务发现等功能需要开发者扩展实现。</li>
-</ul>
-</li>
-</ul>
-<h3 id="2-2-gRPC-核心概念"><a href="#2-2-gRPC-核心概念" class="headerlink" title="2.2 gRPC 核心概念"></a>2.2 gRPC 核心概念</h3><h4 id="2-2-1-服务调用模式"><a href="#2-2-1-服务调用模式" class="headerlink" title="2.2.1 服务调用模式"></a>2.2.1 服务调用模式</h4><p>gRPC 底层通信依赖于 HTTP/2 协议，由于 HTTP/2 协议是一个支持双向流的协议，因此 gRPC 在 API 的设计上也才用了流的方式。gRPC 中允许定义四种服务调用模式：</p>
-<ol>
-<li><p>Unary 调用模式：响应-请求模式，客户端发送请求给服务端，服务端应答；</p>
-<p><code>rpc SayHello(HelloRequest) returns (HelloResponse){ }</code></p>
-</li>
-<li><p>Server Streaming 模式：客户端发送一个请求给服务端，并获取一个数据流用来读取一系列消息。客户端从返回的数据流里一直读取直到没有更多消息为止；</p>
-<p><code>rpc LotsOfReplies(HelloRequest) returns (stream HelloResponse){ }</code></p>
-</li>
-<li><p>Client Streaming 模式：客户端用提供的一个数据流写入并发送一系列消息给服务端。一旦客户端完成消息写入，就等待服务端读取这些消息并返回应答；</p>
-<p><code>rpc LotsOfGreetings(stream HelloRequest) returns (HelloResponse) { }</code></p>
-</li>
-<li><p>双向 Streaming 模式：通信双方之间建立相互独立的读写数据流来发送一系列消息，双方都可发送多次消息，且允许乱序发送消息。</p>
-<p><code>rpc BidiHello(stream HelloRequest) returns (stream HelloResponse){ }</code></p>
-</li>
-</ol>
-<h4 id="2-2-2-生命周期"><a href="#2-2-2-生命周期" class="headerlink" title="2.2.2 生命周期"></a>2.2.2 生命周期</h4><p>// todo</p>
-<h4 id="2-2-3-Protobuf"><a href="#2-2-3-Protobuf" class="headerlink" title="2.2.3 Protobuf"></a>2.2.3 Protobuf</h4><p>gRPC 默认使用 Protocal Buffers (Protobuf) 作为接口定义语言，来描述服务接口和消息结构。Protocol Buffers 是一个可独立使用的序列化框架，它并不与 gRPC 框架绑定，任何需要支持多语言的 RPC 框架都可以选择使用 Protocol Buffers 作为序列化框架。</p>
-<p>Protocol Buffers 的使用主要包括</p>
-<ul>
-<li>IDL 文件定义（*.proto）, 包含数据结构定义，以及可选的服务接口定义（gRPC）；</li>
-<li>各种语言的代码生成（含数据结构定义、以及序列化和反序列化接口）；</li>
-<li>使用 Protocol Buffers 的 API 进行序列化和反序列化。</li>
-</ul>
-<h5 id="支持的数据结构"><a href="#支持的数据结构" class="headerlink" title="支持的数据结构"></a>支持的数据结构</h5><ul>
-<li>支持主流语言常用数据结构，考虑到跨语言特性，对于特定语言的数据结构并不提供支持，如 Java 的 Exception 对象。</li>
-</ul>
-<h5 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h5><table>
-<thead>
-<tr>
-<th align="center">protobuf</th>
-<th align="center">C++</th>
-<th align="center">Java</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">double</td>
-<td align="center">double</td>
-<td align="center">double</td>
-</tr>
-<tr>
-<td align="center">float</td>
-<td align="center">float</td>
-<td align="center">float</td>
-</tr>
-<tr>
-<td align="center">int32</td>
-<td align="center">int32</td>
-<td align="center">int</td>
-</tr>
-<tr>
-<td align="center">int64</td>
-<td align="center">int64</td>
-<td align="center">long</td>
-</tr>
-<tr>
-<td align="center">string</td>
-<td align="center">string</td>
-<td align="center">String</td>
-</tr>
-<tr>
-<td align="center">bytes</td>
-<td align="center">string</td>
-<td align="center">ByteString</td>
-</tr>
-<tr>
-<td align="center">bool</td>
-<td align="center">bool</td>
-<td align="center">boolean</td>
-</tr>
-<tr>
-<td align="center">…</td>
-<td align="center">…</td>
-<td align="center">…</td>
-</tr>
-</tbody></table>
-<center>表1. Protobuf 基本数据类型对照表</center>
-
-<h5 id="复杂数据类型"><a href="#复杂数据类型" class="headerlink" title="复杂数据类型"></a>复杂数据类型</h5><ul>
-<li>数组类型</li>
-</ul>
-<p>利用 Protobuf 提供的 <code>repeted</code>关键字，标识该字段重复任意次数，相当于数组的功能。</p>
-<ul>
-<li>枚举类型</li>
-</ul>
-<p><code>enum</code>关键字定义枚举类型，eg.</p>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">QueryInfo</span></span>&#123;</span><br><span class="line">	<span class="built_in">string</span> queryID = <span class="number">1</span>;</span><br><span class="line">	<span class="class"><span class="keyword">enum</span> <span class="title">Types</span></span>&#123;</span><br><span class="line">		USER = <span class="number">0</span>;</span><br><span class="line">		GROUP=<span class="number">1</span>;</span><br><span class="line">		OTHERS=<span class="number">2</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	Types type = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>Map 类型</li>
-</ul>
-<p>在 Protobuf 3 中新增了对 Map 类型的支持，eg.</p>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">map&lt;key_type, value_type&gt; map_field = N;</span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">ValueType</span></span>&#123;...&#125;</span><br><span class="line">map&lt;<span class="built_in">string</span>, ValueType&gt; typeMap = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
-
-<p>Map 的键值可以是基本数据类型，也可以是自定义的 message ，但不支持<code>repeated</code>关键字。</p>
-<ul>
-<li>泛型</li>
-</ul>
-<p>对于类型无法确定的情况，类似于 Java 中的泛型，Protobuf 提供了 <code>google.protobuf.Any</code>这个类型，表示存放任意类型的数据。根据我司开发规范，这种类型被强制不允许使用。</p>
-<h5 id="IDL-文件定义"><a href="#IDL-文件定义" class="headerlink" title="IDL 文件定义"></a>IDL 文件定义</h5><p>基本的 Protobuf 语法定义的数据结构如下所示:</p>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">"proto3"</span>;									<span class="comment">// protobuf 版本</span></span><br><span class="line"><span class="keyword">option</span> java_package = <span class="string">"io.grpc.examples.helloworld"</span>;	<span class="comment">// 生成代码的存放路径</span></span><br><span class="line"><span class="keyword">package</span> helloworld;		<span class="comment">// 包名</span></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">HelloRequest</span> </span>&#123;	<span class="comment">// message 关键字定义数据结构</span></span><br><span class="line">	<span class="built_in">string</span> name = <span class="number">1</span>;	<span class="comment">// 字段名称 = Tag，Tag 作为字段的标识符在每个 message 中唯一</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">HelloReply</span> </span>&#123;</span><br><span class="line">	<span class="built_in">string</span> <span class="class"><span class="keyword">message</span> = 1;</span></span><br><span class="line"><span class="class">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<p>详细语法参考：<a href="https://developers.google.com/protocol-buffers/docs/proto3">Language Guide (proto3)</a></p>
-<h5 id="代码生成"><a href="#代码生成" class="headerlink" title="代码生成"></a>代码生成</h5><p>.proto 文件中定义的每个 service ，protoc 会生成一个名为<code>{service_name}Grpc</code>的类，这个类存放在 <code>java_packag</code>指定的包结构下。</p>
-<p>下载 protoc 后，可以通过命令行调用 protoc 来生成桩代码，或者使用官方推荐的更优雅的方式，配置 maven 或者 gradle 在项目编译时自动生成桩代码。maven 配置见下文。</p>
-<h3 id="2-3-hello-gRPC"><a href="#2-3-hello-gRPC" class="headerlink" title="2.3 hello gRPC"></a>2.3 hello gRPC</h3><p>以下参考 gRPC 官方文档的 demo 学习 gRPC 基本用法，实现服务端(Java)与客户端(Android)之间四种服务调用模式通信。</p>
-<h4 id="2-3-1-服务端-Java"><a href="#2-3-1-服务端-Java" class="headerlink" title="2.3.1 服务端(Java)"></a>2.3.1 服务端(Java)</h4><h5 id="开发环境配置"><a href="#开发环境配置" class="headerlink" title="开发环境配置"></a>开发环境配置</h5><ol>
-<li><p>下载 protoc 编译器，配置环境变量；</p>
-</li>
-<li><p>服务端选用 Intellij IDEA 开发，首先安装两个插件，用于支持.proto 文件语法高亮和 POJO 类自动转换 proto.</p>
-<div align=center><img src="https://i.loli.net/2020/07/26/MScwZTG7iEKaBzx.png" alt="image-20200726193320751" style="zoom:70%;" />
-
-<center>图7. IDEA Protobuf 插件</center>
-</li>
-<li><p>新建一个 maven 项目 grpcServer，配置 pom.xml 添加对 Protobuf 的依赖：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">grpc.version</span>&gt;</span>1.6.1<span class="tag">&lt;/<span class="name">grpc.version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">protobuf.version</span>&gt;</span>3.5.0<span class="tag">&lt;/<span class="name">protobuf.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.grpc<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>grpc-netty<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;grpc.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.grpc<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>grpc-protobuf<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;grpc.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.grpc<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>grpc-stub<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;grpc.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.google.protobuf<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>protobuf-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;protobuf.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>建立源码目录 </p>
-<p>手动建立目录<code>src/main/java</code>保存服务实现源码，<code>src/main/proto</code>保存.proto 文件，注意这里要把 /proto 这个目录设置成源文件目录(Mark Directory as -&gt; Sources Root)。</p>
-</li>
-</ol>
-<h5 id="接口定义"><a href="#接口定义" class="headerlink" title="接口定义"></a>接口定义</h5><p>在/proto 目录下，新建<code>test.proto</code>文件，定义四个 rpc 方法，分别对应四种服务调用类型:</p>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">"proto3"</span>;       <span class="comment">//指定语法为 proto3 格式，proto2 和 3 语法上有挺多不同，这里要注意指定下</span></span><br><span class="line"><span class="keyword">option</span> java_package = <span class="string">"me.misscoconut.rpc"</span>;          <span class="comment">// 生成 Java 类文件所在包名</span></span><br><span class="line"><span class="keyword">option</span> java_outer_classname = <span class="string">"GetProfileService"</span>;   <span class="comment">// 生成的 Java 类名</span></span><br><span class="line"><span class="keyword">option</span> java_multiple_files = <span class="literal">true</span>;  <span class="comment">// 设置为 true,针对每个 message 和 ervice 都单独生成一个类；</span></span><br><span class="line">									<span class="comment">// 设置为 false,会以内部类的形式生成</span></span><br><span class="line"><span class="class"><span class="keyword">service</span> <span class="title">getProfileService</span></span>&#123;</span><br><span class="line">  <span class="comment">// Simple RPC	</span></span><br><span class="line">  <span class="function"><span class="keyword">rpc</span> getUsernameByID(ProfileRequest) <span class="keyword">returns</span> (ProfileResponse)</span>;   </span><br><span class="line">  <span class="comment">// Server Streaming</span></span><br><span class="line">  <span class="function"><span class="keyword">rpc</span> getUsernamesByID(ProfileRequest) <span class="keyword">returns</span> (stream ProfileResponse)</span>;         </span><br><span class="line">  <span class="comment">// Client Streaming</span></span><br><span class="line">  <span class="function"><span class="keyword">rpc</span> getUsernameByIDs(ProfileRequest) <span class="keyword">returns</span> (stream ProfileResponse)</span>;          </span><br><span class="line">  <span class="comment">// Bidirectional Streaming</span></span><br><span class="line">  <span class="function"><span class="keyword">rpc</span> getUsernamesByIDs(stream ProfileRequest) <span class="keyword">returns</span> (stream ProfileResponse)</span>;  </span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">ProfileRequest</span></span>&#123;</span><br><span class="line">  <span class="built_in">string</span> userID = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">ProfileResponse</span></span>&#123;</span><br><span class="line">  <span class="built_in">string</span> userName = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="生成-Java-桩代码"><a href="#生成-Java-桩代码" class="headerlink" title="生成 Java 桩代码"></a>生成 Java 桩代码</h5><p>在 pom.xml 配置 protobuf 插件:</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">extensions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">extension</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>kr.motd.maven<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>os-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.5.0.Final<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">extension</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">extensions</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.xolstice.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>protobuf-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.5.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">protocArtifact</span>&gt;</span>com.google.protobuf:protoc:$&#123;protobuf.version&#125;:exe:$&#123;os.detected.classifier&#125;<span class="tag">&lt;/<span class="name">protocArtifact</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">pluginId</span>&gt;</span>grpc-java<span class="tag">&lt;/<span class="name">pluginId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">pluginArtifact</span>&gt;</span>io.grpc:protoc-gen-grpc-java:$&#123;grpc.version&#125;:exe:$&#123;os.detected.classifier&#125;<span class="tag">&lt;/<span class="name">pluginArtifact</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goal</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goal</span>&gt;</span>compile-custom<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>同步一下，maven compile 项目。/target 目录下生成桩代码。</p>
-<p><img src="https://i.loli.net/2020/07/26/w8o4cIUZ1e6mvQB.png" alt="image-20200726235923085"></p>
-<center>图8. proto 文件生成桩代码</center>
-
-<h5 id="服务端实现"><a href="#服务端实现" class="headerlink" title="服务端实现"></a>服务端实现</h5><p>// todo</p>
-<h4 id="2-3-2-客户端-Android"><a href="#2-3-2-客户端-Android" class="headerlink" title="2.3.2 客户端(Android)"></a>2.3.2 客户端(Android)</h4><p>// todo</p>
-<h2 id="三、安全问题"><a href="#三、安全问题" class="headerlink" title="三、安全问题"></a>三、安全问题</h2><h3 id="3-1-服务鉴权"><a href="#3-1-服务鉴权" class="headerlink" title="3.1 服务鉴权"></a>3.1 服务鉴权</h3><p>// todo</p>
-<h3 id="3-2-反序列化"><a href="#3-2-反序列化" class="headerlink" title="3.2 反序列化"></a>3.2 反序列化</h3><p>// todo</p>
-<p>// todo</p>
-<h2 id="四、参考链接"><a href="#四、参考链接" class="headerlink" title="四、参考链接"></a>四、参考链接</h2><ul>
-<li><p><a href="https://www.zhihu.com/question/41609070">既然有 HTTP 请求，为什么还要用 RPC 调用？</a></p>
-</li>
-<li><p><a href="https://doc.oschina.net/grpc?t=56831">gRPC 官方文档中文版</a></p>
-</li>
-<li><p><a href="https://zhuanlan.zhihu.com/p/148139089">gRPC系列(一) 什么是RPC？</a></p>
-</li>
-<li><p><a href="https://zhuanlan.zhihu.com/p/58533413">一文读懂HTTP/2及HTTP/3特性</a></p>
-</li>
-</ul>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="2020/07/27/gRPC%20%E7%AC%94%E8%AE%B0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -491,10 +245,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-07-14 01:51:33 / 修改时间：02:26:51" itemprop="dateCreated datePublished" datetime="2020-07-14T01:51:33+08:00">2020-07-14</time>
+              <time title="创建时间：2020-07-14 01:51:33" itemprop="dateCreated datePublished" datetime="2020-07-14T01:51:33+08:00">2020-07-14</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-07-27 01:56:04" itemprop="dateModified" datetime="2020-07-27T01:56:04+08:00">2020-07-27</time>
+              </span>
 
           
 
@@ -510,40 +270,14 @@
           <h1 id="一、起因"><a href="#一、起因" class="headerlink" title="一、起因"></a>一、起因</h1><p>近两个月，巨大的压力和内心的焦虑给自己的工作生活与身心健康上带来了许多困扰。</p>
 <p>面对的压力源既有工作上的，更多的则是来自家庭方面，而且这两方面的压力源，在可预见的未来很长一段时间里并不会消失。</p>
 <p>当下我试图为自己找到一套科学的思维框架去直面压力与焦虑，希望今后面对相同情境时可以省去大量无用的思考，将精力聚焦在更有意义的事情上。</p>
-<h1 id="二、为什么会存在焦虑？"><a href="#二、为什么会存在焦虑？" class="headerlink" title="二、为什么会存在焦虑？"></a>二、为什么会存在焦虑？</h1><p>如果从进化论角度来理解焦虑的话，那么可以说焦虑是人类生存的必备技能。</p>
-<p>远古时期人类依靠打猎生存，祖先们遇到危险时产生紧张焦虑情绪，导致肾上腺素上升，进而心跳加速，注意力集中，反应敏锐，于是才能在恶劣的自然条件中存活下来。反之，那些不会没有产生紧张焦虑情绪的人类早已被淘汰，如今的我们都是在遇到危险情况时会感到紧张焦虑的祖先们的后代。</p>
-<p>焦虑并不是一种毫无可取之处的情绪，适当的压力和焦虑，可以有效的警醒我们面对即将发生的事情。</p>
-<h1 id="三、焦虑的本质是什么？"><a href="#三、焦虑的本质是什么？" class="headerlink" title="三、焦虑的本质是什么？"></a>三、焦虑的本质是什么？</h1><ul>
-<li><p>存在不确定性</p>
-</li>
-<li><p>无法控制事物发展</p>
-</li>
-<li><p>关心在意某件事</p>
-</li>
-</ul>
-<h1 id="四、如何与焦虑共处"><a href="#四、如何与焦虑共处" class="headerlink" title="四、如何与焦虑共处?"></a>四、如何与焦虑共处?</h1><p>既然焦虑是一种非常正常的应激反应，那么试图去消除焦虑似乎并不容易。</p>
-<p>但我们可以从焦虑的本质入手，想办法和焦虑共处，保证我们的工作生活可以正常进行下去。</p>
-<ol>
-<li><p>存在不确定性 –&gt; <strong>评估威胁程度</strong></p>
-<p> 即便不确定的事情，也会存在确定的一面。</p>
-<p> 做好最好的打算和最坏的打算，无论事情朝着哪个方向发展，自己心里有谱，焦虑感会减轻许多。</p>
-</li>
-<li><p>关心在意某件事 –&gt; <strong>正念冥想</strong></p>
-<p> 在陷入极度焦虑的沼泽时使用，将注意力从嘈杂的事物中拯救出来，专注于当下的呼吸上，和身体建立连接，使自己平静下来。</p>
-<p> 生活中的10%取决于发生的事情，而剩下 90%取决于我们对待事物的反应。正念冥想更积极的意义在于当人平静下来后，才能更理智的思考该以怎样的反应去应对当前的事情。</p>
-<p> 相关资源：潮汐 app、喜马拉雅 app 上的课程等等。</p>
-</li>
-<li><p>无法控制事物发展 –&gt; <strong>做正确的事</strong></p>
-<p> 无法控制的事情，不必执着。做自己能控制的正确的事。</p>
-<blockquote>
-<p>When I do good,I feel good,When I do bad,I feed bad.</p>
-</blockquote>
-<p> 按时吃饭，按时睡觉，正常工作，积极锻炼。</p>
-<p> 越是焦虑紧张的时候，越要做按部就班的正确的事情。熟悉的日常节奏会给自己很多安心的感觉。</p>
-</li>
-</ol>
-<p>不管怎样，生活还要继续下去，可能是中国人骨子里的乐观精神吧，我始终愿意相信一切总会好起来的。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="2020/07/14/%E5%8E%8B%E5%8A%9B/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -585,10 +319,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-07-12 15:55:05 / 修改时间：22:47:08" itemprop="dateCreated datePublished" datetime="2020-07-12T15:55:05+08:00">2020-07-12</time>
+              <time title="创建时间：2020-07-12 15:55:05" itemprop="dateCreated datePublished" datetime="2020-07-12T15:55:05+08:00">2020-07-12</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-07-27 01:56:54" itemprop="dateModified" datetime="2020-07-27T01:56:54+08:00">2020-07-27</time>
+              </span>
 
           
 
@@ -602,10 +342,8 @@
 
       
           <p>博客这个事情，从学生时期就想弄，一拖再拖直到现在，已经步入职场三年了。</p>
-<!-- 刚好最近这段时间空闲下来，认真想了下自己为什么会在这件事上拖延这么久？我在逃避什么呢？我所担心的点是真实存在的问题吗？这样反复追问下去，我想我找到了一些答案。 -->
-
 <p>把做的事情亮出去，对我来说是一件蛮有压力的事情。逃避了这么久，并不想再继续安逸下去了。趁现在还算年轻，是时候借着这种压力 push 自己一把。</p>
-<p>这个周末博客准备完毕，给自己定个规矩吧，今后无论工作还是生活，在做的事情无论进展多糟糕，都要把它<strong>做完</strong>，并且要<strong>亮出去</strong>，要去承受被评论的心理压力，从而不断逼迫自己下次做的更好，强制审视自己并做出改变。</p>
+<p>这个周末博客准备完毕，给自己定个规矩吧，今后无论工作还是生活，在做的事情无论进展多糟糕，都要把它<strong>做完</strong>，并且要<strong>亮出去</strong>，要去不断逼迫自己下次做的更好，强制审视自己并做出改变。</p>
 <p>希望自己可以做到专业技术类文章<strong>月更至少一篇</strong>，其他领域知识技能类文章<strong>双月一篇</strong>。</p>
 
       
