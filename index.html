@@ -122,12 +122,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">4</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">5</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">3</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">4</span></a>
 
   </li>
   </ul>
@@ -149,6 +149,82 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://misscoconut.github.io/2020/08/01/Python%20%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="MissCoconut">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="椰子小姐的笔记本">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="2020/08/01/Python%20%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">Python 笔记</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-08-01 20:18:26 / 修改时间：20:52:10" itemprop="dateCreated datePublished" datetime="2020-08-01T20:18:26+08:00">2020-08-01</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>本文知识点比较杂，多为平时不太熟悉的 python 特性。</p>
+<p>参考组内@RedFree 大佬的分享 和 b 站视频  <a href="https://www.bilibili.com/video/BV1FJ411J7CR">惊呆！Python 竟然还有这样的黑魔法！</a> 整理。</p>
+</blockquote>
+<h1 id="0x01-基本数据类型"><a href="#0x01-基本数据类型" class="headerlink" title="0x01 基本数据类型"></a>0x01 基本数据类型</h1><h2 id="推导式"><a href="#推导式" class="headerlink" title="推导式"></a>推导式</h2><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[表达式 for 迭代变量 in 可迭代对象 if 条件 / for 循环]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>带判断条件的</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">31</span>]: myList = [i <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">10</span>) <span class="keyword">if</span> i &gt; <span class="number">5</span>]</span><br><span class="line"></span><br><span class="line">In [<span class="number">32</span>]: myList</span><br><span class="line">Out[<span class="number">32</span>]: [<span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]</span><br></pre></td></tr></table></figure></li>
+<li><p>折腾字典的</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">33</span>]: myDict = &#123;<span class="string">'key1'</span>:<span class="string">'v1'</span>,<span class="string">'key2'</span>:<span class="string">'V2'</span>&#125;</span><br><span class="line">In [<span class="number">37</span>]: ret = &#123;key:value <span class="keyword">for</span> value,key <span class="keyword">in</span> myDict.items()&#125;</span><br><span class="line"></span><br><span class="line">In [<span class="number">38</span>]: ret</span><br><span class="line">Out[<span class="number">38</span>]: &#123;<span class="string">'v1'</span>: <span class="string">'key1'</span>, <span class="string">'V2'</span>: <span class="string">'key2'</span>&#125;</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="2020/08/01/Python%20%E7%AC%94%E8%AE%B0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -442,14 +518,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
