@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../../images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../../images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../../images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="../../../../images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="../../../../css/main.css">
+
+
+<link rel="stylesheet" href="../../../../lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"misscoconut.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1. CeleryCelery是一个 Python 分布式的任务调度模块，支持实时处理异步消息队列，学习成本低且稳定高效。 模块架构Celery 模块架构如下：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Celery 任务调度">
+<meta property="og:url" content="https://misscoconut.github.io/2020/08/18/celery/index.html">
+<meta property="og:site_name" content="椰子小姐的笔记本">
+<meta property="og:description" content="1. CeleryCelery是一个 Python 分布式的任务调度模块，支持实时处理异步消息队列，学习成本低且稳定高效。 模块架构Celery 模块架构如下：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/08/17/Nd4bmazQgtkCvKV.png">
+<meta property="og:image" content="https://i.loli.net/2020/08/17/OlvauFGtZchHwWs.png">
+<meta property="og:image" content="https://i.loli.net/2020/08/17/xnVfSr1vMokpeLJ.png">
+<meta property="og:image" content="https://i.loli.net/2020/08/17/k4iYhUmgCOErzKq.png">
+<meta property="og:image" content="https://i.loli.net/2020/08/18/cHT3YCt4gGy7l9P.png">
+<meta property="article:published_time" content="2020-08-17T18:09:49.000Z">
+<meta property="article:modified_time" content="2020-08-17T18:13:49.973Z">
+<meta property="article:author" content="MissCoconut">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="分布式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/08/17/Nd4bmazQgtkCvKV.png">
+
+<link rel="canonical" href="https://misscoconut.github.io/2020/08/18/celery/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Celery 任务调度 | 椰子小姐的笔记本</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="atom.xml" title="椰子小姐的笔记本" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">椰子小姐的笔记本</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">知行合一</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="../../../../index.html" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="../../../../about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="../../../../tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">6</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="../../../../archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">5</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://misscoconut.github.io/2020/08/18/celery/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="../../../../images/avatar.png">
+      <meta itemprop="name" content="MissCoconut">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="椰子小姐的笔记本">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Celery 任务调度
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-08-18 02:09:49 / 修改时间：02:13:49" itemprop="dateCreated datePublished" datetime="2020-08-18T02:09:49+08:00">2020-08-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="1-Celery"><a href="#1-Celery" class="headerlink" title="1. Celery"></a>1. Celery</h2><p>Celery是一个 Python 分布式的任务调度模块，支持实时处理异步消息队列，学习成本低且稳定高效。</p>
+<h3 id="模块架构"><a href="#模块架构" class="headerlink" title="模块架构"></a>模块架构</h3><p>Celery 模块架构如下：</p>
+<p><img src="https://i.loli.net/2020/08/17/Nd4bmazQgtkCvKV.png" alt="image-20200817010421489"></p>
+<a id="more"></a>
+
+<h3 id="1-任务生产者-task-producer"><a href="#1-任务生产者-task-producer" class="headerlink" title="1  任务生产者 (task producer)"></a>1  任务生产者 (task producer)</h3><p>调用 Celery 提供的 API，产生任务并交给任务队列处理的应用。</p>
+<h3 id="2-任务调度器-celery-beat"><a href="#2-任务调度器-celery-beat" class="headerlink" title="2 任务调度器 (celery beat)"></a>2 任务调度器 (celery beat)</h3><p>Celery beat 是 Celery 系统自带的任务生产者，用于执行预先定义的定时任务。</p>
+<h3 id="3-任务代理-broker"><a href="#3-任务代理-broker" class="headerlink" title="3 任务代理 (broker)"></a>3 任务代理 (broker)</h3><p>消息队列中间件，Celery 官方推荐使用 rabbitmq，redis 做消息队列也可，只是稳定性没有rabbitmq 那么强。</p>
+<h3 id="4-任务消费方-celery-worker"><a href="#4-任务消费方-celery-worker" class="headerlink" title="4 任务消费方 (celery worker)"></a>4 任务消费方 (celery worker)</h3><p>真正执行工作任务的应用。worker 对应的是系统中的一个进程。</p>
+<p>Celery 支持分布式部署和横向扩展，可以通过在多个节点增加 worker 的数量来增加系统的高可用性，也可以在不同节点上分配执行不同任务的 worker 来达到模块化的目的。</p>
+<h3 id="5-结果保存"><a href="#5-结果保存" class="headerlink" title="5 结果保存"></a>5 结果保存</h3><p>Celery 支持任务处理完后将状态信息和结果的保存，以供查询。Celery 内置支持 rpc, Django ORM，Redis，RabbitMQ 等方式来保存任务处理后的状态信息。另外，Celery 还支持各种参加的序列化方式。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p><code>pip install -U Celery</code></p>
+<h2 id="2-Celery-执行异步任务"><a href="#2-Celery-执行异步任务" class="headerlink" title="2. Celery 执行异步任务"></a>2. Celery 执行异步任务</h2><p>非常简单省心。</p>
+<h3 id="消费者进行消费"><a href="#消费者进行消费" class="headerlink" title="消费者进行消费"></a>消费者进行消费</h3><ol start="0">
+<li>启动消息队列中间件；</li>
+<li>消费者定义异步任务方法；</li>
+<li>启动 Celery，Celery 会去完成连接消息队列中间件、创建消息队列、监听队列，等等操作。</li>
+</ol>
+<h3 id="生产者发消息"><a href="#生产者发消息" class="headerlink" title="生产者发消息"></a>生产者发消息</h3><ol>
+<li>将异步任务方法 import 进来，然后调用 <code>delay()</code>方法。</li>
+<li>之后 Celery 会做很多麻烦活儿：连接消息队列，创建队列，写消息，blabla。</li>
+</ol>
+<h2 id="3-demo"><a href="#3-demo" class="headerlink" title="3. demo"></a>3. demo</h2><p>为了简单，这里 broker (消息队列中间件) 和 backend (保存任务结果的地方) 都用 redis，存放在不同的库里。</p>
+<h3 id="消费者"><a href="#消费者" class="headerlink" title="消费者"></a>消费者</h3><ol>
+<li>定义任务</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># celery_task.py</span></span><br><span class="line"><span class="comment"># Celery task 消费者</span></span><br><span class="line"><span class="keyword">import</span> celery</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">backend = <span class="string">"redis://0.0.0.0:xxxx/1"</span></span><br><span class="line">broker = <span class="string">"redis://0.0.0.0:Xxxx/2"</span></span><br><span class="line"></span><br><span class="line">coco_celery = celery.Celery(<span class="string">"coconut"</span>, backend=backend, broker=broker)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 模拟耗时操作</span></span><br><span class="line"><span class="meta">@coco_celery.task</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_sth</span><span class="params">(s)</span>:</span></span><br><span class="line">    time.sleep(s)</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@coco_celery.task</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_sth_b</span><span class="params">(s)</span>:</span></span><br><span class="line">    time.sleep(s)</span><br><span class="line">    <span class="keyword">return</span> s</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>命令行启动 Celery </p>
+<p><code>celery worker -A celery_tasks -l info</code></p>
+</li>
+</ol>
+<p><img src="https://i.loli.net/2020/08/17/OlvauFGtZchHwWs.png" alt="Image"></p>
+<h3 id="生产者"><a href="#生产者" class="headerlink" title="生产者"></a>生产者</h3><ol>
+<li><code>import</code> 进来 task 方法</li>
+<li>调用固定方法 <code>delay()</code></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># producer_task.py</span></span><br><span class="line"><span class="keyword">from</span> CeleryTest.celery_task <span class="keyword">import</span> do_sth, do_sth_b</span><br><span class="line"></span><br><span class="line">result = do_sth.delay(<span class="number">3</span>)</span><br><span class="line">print(<span class="string">f"worker task end <span class="subst">&#123;result&#125;</span>"</span>)</span><br><span class="line"></span><br><span class="line">result2 = do_sth_b.delay(<span class="number">2</span>)</span><br><span class="line">print(<span class="string">f"worker task2 end <span class="subst">&#123;result2&#125;</span>"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>一个<code>delay ()</code> 方法，Celery 会自动把异步任务函数名、参数等等发送到消息队列。生产者直接运行这个 py 文件就行了。</p>
+<h3 id="踩坑"><a href="#踩坑" class="headerlink" title="踩坑"></a>踩坑</h3><p>生产者发送消息后，拿到了任务 id，但是消费者这边报错：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[2020-08-17 02:09:24,644: ERROR/MainProcess] Received unregistered task of<span class="built_in"> type </span><span class="string">'CeleryTest.celery_task.do_sth'</span>.</span><br><span class="line">The message has been ignored <span class="keyword">and</span> discarded.</span><br><span class="line"></span><br><span class="line">Did you remember <span class="keyword">to</span> import the module containing this task?</span><br><span class="line"><span class="keyword">Or</span> maybe you<span class="string">'re using relative imports?</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Please see</span></span><br><span class="line"><span class="string">http://docs.celeryq.org/en/latest/internals/protocol.html</span></span><br><span class="line"><span class="string">for more information.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">The full contents of the message body was:</span></span><br><span class="line"><span class="string">b'</span>[[3], &#123;&#125;, &#123;<span class="string">"callbacks"</span>: <span class="literal">null</span>, <span class="string">"errbacks"</span>: <span class="literal">null</span>, <span class="string">"chain"</span>: <span class="literal">null</span>, <span class="string">"chord"</span>: <span class="literal">null</span>&#125;]<span class="string">' (78b)</span></span><br><span class="line"><span class="string">Traceback (most recent call last):</span></span><br><span class="line"><span class="string">  File "d:\workspace\cocotest\venv2\lib\site-packages\celery\worker\consumer\consumer.py", line 562, in on_task_received</span></span><br><span class="line"><span class="string">    strategy = strategies[type_]</span></span><br><span class="line"><span class="string">KeyError: '</span>CeleryTest.celery_task.do_sth<span class="string">'</span></span><br></pre></td></tr></table></figure>
+
+<p>生产者这边 import 了这两个任务的方法，还是报错找不到这两个 task。</p>
+<p>仔细看 <code>[2020-08-17 02:09:24,644: ERROR/MainProcess] Received unregistered task of type &#39;CeleryTest.celery_task.do_sth&#39;.</code> 和前边消费者启动时候 Celery 找到的任务名不一样….</p>
+<p>问题在目录结构上：</p>
+<p><img src="https://i.loli.net/2020/08/17/xnVfSr1vMokpeLJ.png" alt="image-20200817021434940"></p>
+<p>现在的目录结构是这样，然鹅消费者启动 Celery 的时候命令是  <code>celery worker -A celery_tasks -l info</code> 改成，<code>celery worker -A CeleryTest.celery_task -l info</code> 之后解决。</p>
+<p><img src="https://i.loli.net/2020/08/17/k4iYhUmgCOErzKq.png" alt="image-20200817023126097"></p>
+<h3 id="要注意的地方"><a href="#要注意的地方" class="headerlink" title="要注意的地方"></a>要注意的地方</h3><p>Celery 使用中需要特别注意目录结构，确保 Celery 能识别出来定义的任务。</p>
+<p>典型的目录结构如：</p>
+<p><img src="https://i.loli.net/2020/08/18/cHT3YCt4gGy7l9P.png" alt="image-20200818020535964"></p>
+<p>其中 1 放实际的任务，可以分包组织，注意保证文件名是 <code>tasks.py</code>；</p>
+<p>2 保存 Celery 的各种配置；</p>
+<p>3 中生成 Celery app对象，加载配置等。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># main.py</span></span><br><span class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> Celery</span><br><span class="line"></span><br><span class="line">app = Celery(<span class="string">"mytasks"</span>)</span><br><span class="line"></span><br><span class="line">app.config_from_object(<span class="string">"CeleryTest.config"</span>)</span><br><span class="line"></span><br><span class="line">app.autodiscover_tasks([</span><br><span class="line">    <span class="string">"CeleryTest.recv_task.do_sth"</span>,</span><br><span class="line">    <span class="string">"CeleryTest.send_task.do_sth_b"</span></span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Celery 根目录下启动</span></span><br><span class="line"><span class="comment"># Celery -A CeleryTest.main worker -l=info</span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>万物皆有时，比如你我相遇。</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="../../../../images/wechatpay.png" alt="MissCoconut 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>MissCoconut
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="../../../../https:/misscoconut.github.io/2020/08/18/celery/" title="Celery 任务调度">https://misscoconut.github.io/2020/08/18/celery/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="../../../../https:/creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="../../../../tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+              <a href="../../../../tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag"><i class="fa fa-tag"></i> 分布式</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="../../01/Python%20%E7%AC%94%E8%AE%B0/" rel="prev" title="Python 基础查缺补漏">
+      <i class="fa fa-chevron-left"></i> Python 基础查缺补漏
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Celery"><span class="nav-text">1. Celery</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模块架构"><span class="nav-text">模块架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-任务生产者-task-producer"><span class="nav-text">1  任务生产者 (task producer)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-任务调度器-celery-beat"><span class="nav-text">2 任务调度器 (celery beat)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-任务代理-broker"><span class="nav-text">3 任务代理 (broker)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-任务消费方-celery-worker"><span class="nav-text">4 任务消费方 (celery worker)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-结果保存"><span class="nav-text">5 结果保存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-text">安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Celery-执行异步任务"><span class="nav-text">2. Celery 执行异步任务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#消费者进行消费"><span class="nav-text">消费者进行消费</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产者发消息"><span class="nav-text">生产者发消息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-demo"><span class="nav-text">3. demo</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#消费者"><span class="nav-text">消费者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产者"><span class="nav-text">生产者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#踩坑"><span class="nav-text">踩坑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#要注意的地方"><span class="nav-text">要注意的地方</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MissCoconut"
+      src="../../../../images/avatar.png">
+  <p class="site-author-name" itemprop="name">MissCoconut</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="../../../../archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="../../../../tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="../../../../https:/github.com/MissCoconut/" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MissCoconut&#x2F;" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="../../../../https:/weibo.com/_MissCoconut/" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;_MissCoconut&#x2F;" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="../../../../https:/twitter.com/misscoconut7c00/" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;misscoconut7c00&#x2F;" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="../../../../https:/t.me/MissCoconut/" title="Telegram → https:&#x2F;&#x2F;t.me&#x2F;MissCoconut&#x2F;" rel="noopener" target="_blank"><i class="fab fa-telegram fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="../../../../https:/creativecommons.org/licenses/by-nc-sa/4.0/zh-CN" class="cc-opacity" rel="noopener" target="_blank"><img src="../../../../images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MissCoconut</span>
+</div>
+  <div class="powered-by">由 <a href="../../../../https:/hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="../../../../https:/theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="../../../../lib/anime.min.js"></script>
+  <script src="../../../../lib/velocity/velocity.min.js"></script>
+  <script src="../../../../lib/velocity/velocity.ui.min.js"></script>
+
+<script src="../../../../js/utils.js"></script>
+
+<script src="../../../../js/motion.js"></script>
+
+
+<script src="../../../../js/schemes/pisces.js"></script>
+
+
+<script src="../../../../js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '6cfa5e6c3ed6c390a68a',
+      clientSecret: 'eb7f73f819868fdf51abf60f54401b928aa65dbc',
+      repo        : 'MissCoconut.github.io',
+      owner       : 'MissCoconut',
+      admin       : ['MissCoconut'],
+      id          : 'd41d8cd98f00b204e9800998ecf8427e',
+        language: 'zh-Hans',
+      distractionFreeMode: false
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
