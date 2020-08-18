@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"misscoconut.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="1. CeleryCelery是一个 Python 分布式的任务调度模块，支持实时处理异步消息队列，学习成本低且稳定高效。 模块架构Celery 模块架构如下：">
+  <meta name="description" content="1. CeleryCelery 是一个 Python 分布式任务调度模块，支持实时处理异步消息队列，稳定高效易上手。  模块架构Celery 模块架构如下：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Celery 任务调度">
 <meta property="og:url" content="https://misscoconut.github.io/2020/08/18/celery/index.html">
 <meta property="og:site_name" content="椰子小姐的笔记本">
-<meta property="og:description" content="1. CeleryCelery是一个 Python 分布式的任务调度模块，支持实时处理异步消息队列，学习成本低且稳定高效。 模块架构Celery 模块架构如下：">
+<meta property="og:description" content="1. CeleryCelery 是一个 Python 分布式任务调度模块，支持实时处理异步消息队列，稳定高效易上手。  模块架构Celery 模块架构如下：">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://i.loli.net/2020/08/17/Nd4bmazQgtkCvKV.png">
 <meta property="og:image" content="https://i.loli.net/2020/08/17/OlvauFGtZchHwWs.png">
@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://i.loli.net/2020/08/17/k4iYhUmgCOErzKq.png">
 <meta property="og:image" content="https://i.loli.net/2020/08/18/cHT3YCt4gGy7l9P.png">
 <meta property="article:published_time" content="2020-08-17T18:09:49.000Z">
-<meta property="article:modified_time" content="2020-08-17T18:13:49.973Z">
+<meta property="article:modified_time" content="2020-08-18T17:41:28.212Z">
 <meta property="article:author" content="MissCoconut">
 <meta property="article:tag" content="python">
 <meta property="article:tag" content="分布式">
@@ -188,10 +188,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-08-18 02:09:49 / 修改时间：02:13:49" itemprop="dateCreated datePublished" datetime="2020-08-18T02:09:49+08:00">2020-08-18</time>
+              <time title="创建时间：2020-08-18 02:09:49" itemprop="dateCreated datePublished" datetime="2020-08-18T02:09:49+08:00">2020-08-18</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-19 01:41:28" itemprop="dateModified" datetime="2020-08-19T01:41:28+08:00">2020-08-19</time>
+              </span>
 
           
 
@@ -204,43 +210,33 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="1-Celery"><a href="#1-Celery" class="headerlink" title="1. Celery"></a>1. Celery</h2><p>Celery是一个 Python 分布式的任务调度模块，支持实时处理异步消息队列，学习成本低且稳定高效。</p>
+        <h2 id="1-Celery"><a href="#1-Celery" class="headerlink" title="1. Celery"></a>1. Celery</h2><p>Celery 是一个 Python 分布式任务调度模块，支持实时处理异步消息队列，稳定高效易上手。 </p>
 <h3 id="模块架构"><a href="#模块架构" class="headerlink" title="模块架构"></a>模块架构</h3><p>Celery 模块架构如下：</p>
 <p><img src="https://i.loli.net/2020/08/17/Nd4bmazQgtkCvKV.png" alt="image-20200817010421489"></p>
 <a id="more"></a>
 
-<h3 id="1-任务生产者-task-producer"><a href="#1-任务生产者-task-producer" class="headerlink" title="1  任务生产者 (task producer)"></a>1  任务生产者 (task producer)</h3><p>调用 Celery 提供的 API，产生任务并交给任务队列处理的应用。</p>
-<h3 id="2-任务调度器-celery-beat"><a href="#2-任务调度器-celery-beat" class="headerlink" title="2 任务调度器 (celery beat)"></a>2 任务调度器 (celery beat)</h3><p>Celery beat 是 Celery 系统自带的任务生产者，用于执行预先定义的定时任务。</p>
-<h3 id="3-任务代理-broker"><a href="#3-任务代理-broker" class="headerlink" title="3 任务代理 (broker)"></a>3 任务代理 (broker)</h3><p>消息队列中间件，Celery 官方推荐使用 rabbitmq，redis 做消息队列也可，只是稳定性没有rabbitmq 那么强。</p>
-<h3 id="4-任务消费方-celery-worker"><a href="#4-任务消费方-celery-worker" class="headerlink" title="4 任务消费方 (celery worker)"></a>4 任务消费方 (celery worker)</h3><p>真正执行工作任务的应用。worker 对应的是系统中的一个进程。</p>
+<h3 id="1-任务生产者-task-producer"><a href="#1-任务生产者-task-producer" class="headerlink" title="1 - 任务生产者 (task producer)"></a>1 - 任务生产者 (task producer)</h3><p>调用 Celery 提供的 API，产生任务并交给任务队列处理的应用，一段 py 代码、一个 API 请求都可。</p>
+<h3 id="2-任务调度器-celery-beat"><a href="#2-任务调度器-celery-beat" class="headerlink" title="2 - 任务调度器 (celery beat)"></a>2 - 任务调度器 (celery beat)</h3><p>Celery beat 是 Celery 系统自带的任务生产者，用于执行预先定义的定时任务。</p>
+<h3 id="3-任务代理-broker"><a href="#3-任务代理-broker" class="headerlink" title="3 - 任务代理 (broker)"></a>3 - 任务代理 (broker)</h3><p>消息队列中间件，Celery 官方推荐使用 rabbitmq，redis 也可做消息队列，在对稳定性要求不严格时可选。</p>
+<h3 id="4-任务消费方-celery-worker"><a href="#4-任务消费方-celery-worker" class="headerlink" title="4 - 任务消费方 (celery worker)"></a>4 - 任务消费方 (celery worker)</h3><p>真正执行工作任务的。一个 worker 对应一个进程。Celery 几乎用了各种能用上的异步手段来提高并发任务的性能。</p>
 <p>Celery 支持分布式部署和横向扩展，可以通过在多个节点增加 worker 的数量来增加系统的高可用性，也可以在不同节点上分配执行不同任务的 worker 来达到模块化的目的。</p>
-<h3 id="5-结果保存"><a href="#5-结果保存" class="headerlink" title="5 结果保存"></a>5 结果保存</h3><p>Celery 支持任务处理完后将状态信息和结果的保存，以供查询。Celery 内置支持 rpc, Django ORM，Redis，RabbitMQ 等方式来保存任务处理后的状态信息。另外，Celery 还支持各种参加的序列化方式。</p>
+<h3 id="5-结果保存"><a href="#5-结果保存" class="headerlink" title="5 - 结果保存"></a>5 - 结果保存</h3><p>Celery 支持任务处理完后将状态信息和结果的保存，以供查询。Celery 内置支持 rpc, Django ORM，Redis，RabbitMQ 等方式来保存任务处理后的状态信息。另外，Celery 还支持各种参加的序列化方式。</p>
 <h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p><code>pip install -U Celery</code></p>
-<h2 id="2-Celery-执行异步任务"><a href="#2-Celery-执行异步任务" class="headerlink" title="2. Celery 执行异步任务"></a>2. Celery 执行异步任务</h2><p>非常简单省心。</p>
-<h3 id="消费者进行消费"><a href="#消费者进行消费" class="headerlink" title="消费者进行消费"></a>消费者进行消费</h3><ol start="0">
+<h2 id="2-本地任务调用"><a href="#2-本地任务调用" class="headerlink" title="2. 本地任务调用"></a>2. 本地任务调用</h2><p>hello celery，这里参考官方文档，任务在本地，了解 Celery 调度任务的流程。</p>
+<p>为了简单，这里 broker (消息队列中间件) 和 backend (保存任务结果的地方) 都用 redis，存放在不同的库里。</p>
+<h3 id="消费者进行消费"><a href="#消费者进行消费" class="headerlink" title="消费者进行消费"></a>消费者进行消费</h3><ol>
 <li>启动消息队列中间件；</li>
 <li>消费者定义异步任务方法；</li>
 <li>启动 Celery，Celery 会去完成连接消息队列中间件、创建消息队列、监听队列，等等操作。</li>
 </ol>
-<h3 id="生产者发消息"><a href="#生产者发消息" class="headerlink" title="生产者发消息"></a>生产者发消息</h3><ol>
-<li>将异步任务方法 import 进来，然后调用 <code>delay()</code>方法。</li>
-<li>之后 Celery 会做很多麻烦活儿：连接消息队列，创建队列，写消息，blabla。</li>
-</ol>
-<h2 id="3-demo"><a href="#3-demo" class="headerlink" title="3. demo"></a>3. demo</h2><p>为了简单，这里 broker (消息队列中间件) 和 backend (保存任务结果的地方) 都用 redis，存放在不同的库里。</p>
-<h3 id="消费者"><a href="#消费者" class="headerlink" title="消费者"></a>消费者</h3><ol>
-<li>定义任务</li>
-</ol>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># celery_task.py</span></span><br><span class="line"><span class="comment"># Celery task 消费者</span></span><br><span class="line"><span class="keyword">import</span> celery</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">backend = <span class="string">"redis://0.0.0.0:xxxx/1"</span></span><br><span class="line">broker = <span class="string">"redis://0.0.0.0:Xxxx/2"</span></span><br><span class="line"></span><br><span class="line">coco_celery = celery.Celery(<span class="string">"coconut"</span>, backend=backend, broker=broker)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 模拟耗时操作</span></span><br><span class="line"><span class="meta">@coco_celery.task</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_sth</span><span class="params">(s)</span>:</span></span><br><span class="line">    time.sleep(s)</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@coco_celery.task</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">do_sth_b</span><span class="params">(s)</span>:</span></span><br><span class="line">    time.sleep(s)</span><br><span class="line">    <span class="keyword">return</span> s</span><br></pre></td></tr></table></figure>
 
-<ol start="2">
-<li><p>命令行启动 Celery </p>
-<p><code>celery worker -A celery_tasks -l info</code></p>
-</li>
-</ol>
+<p>命令行启动 Celery </p>
+<p> <code>celery worker -A celery_tasks -l info</code></p>
 <p><img src="https://i.loli.net/2020/08/17/OlvauFGtZchHwWs.png" alt="Image"></p>
-<h3 id="生产者"><a href="#生产者" class="headerlink" title="生产者"></a>生产者</h3><ol>
-<li><code>import</code> 进来 task 方法</li>
-<li>调用固定方法 <code>delay()</code></li>
+<h3 id="生产者发消息"><a href="#生产者发消息" class="headerlink" title="生产者发消息"></a>生产者发消息</h3><ol>
+<li>配置 Celery ，指定 broker &amp; backend ，指定任务队列（可选）；</li>
+<li>import 进来要执行的任务，然后调用 <code>delay()</code>方法。</li>
 </ol>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># producer_task.py</span></span><br><span class="line"><span class="keyword">from</span> CeleryTest.celery_task <span class="keyword">import</span> do_sth, do_sth_b</span><br><span class="line"></span><br><span class="line">result = do_sth.delay(<span class="number">3</span>)</span><br><span class="line">print(<span class="string">f"worker task end <span class="subst">&#123;result&#125;</span>"</span>)</span><br><span class="line"></span><br><span class="line">result2 = do_sth_b.delay(<span class="number">2</span>)</span><br><span class="line">print(<span class="string">f"worker task2 end <span class="subst">&#123;result2&#125;</span>"</span>)</span><br></pre></td></tr></table></figure>
 
@@ -261,6 +257,34 @@
 <p>2 保存 Celery 的各种配置；</p>
 <p>3 中生成 Celery app对象，加载配置等。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># main.py</span></span><br><span class="line"><span class="keyword">from</span> celery <span class="keyword">import</span> Celery</span><br><span class="line"></span><br><span class="line">app = Celery(<span class="string">"mytasks"</span>)</span><br><span class="line"></span><br><span class="line">app.config_from_object(<span class="string">"CeleryTest.config"</span>)</span><br><span class="line"></span><br><span class="line">app.autodiscover_tasks([</span><br><span class="line">    <span class="string">"CeleryTest.recv_task.do_sth"</span>,</span><br><span class="line">    <span class="string">"CeleryTest.send_task.do_sth_b"</span></span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Celery 根目录下启动</span></span><br><span class="line"><span class="comment"># Celery -A CeleryTest.main worker -l=info</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-远程任务调用"><a href="#3-远程任务调用" class="headerlink" title="3. 远程任务调用"></a>3. 远程任务调用</h2><p>实际生产中，worker 方法 和 调度方法 很可能跑在不同的机器上，在这种情况下，Celery 通过 broker 实现远程任务调度。</p>
+<p>使用起来也比较简单，首先给生产者和消费者指定相同的 broker 和 backend，然后使用 Celery 的任务队列功能规定好任务队列；生产者同样的方法发送消息，worker 在各个节点上跑起来后会自动执行。</p>
+<h3 id="生产者实现"><a href="#生产者实现" class="headerlink" title="生产者实现"></a>生产者实现</h3><ul>
+<li>Celery 配置</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># worker.py 定义 celery app </span></span><br><span class="line">celery_app = Celery(<span class="string">'celery'</span>,</span><br><span class="line">                 broker=BROKER_CONN_URI,</span><br><span class="line">                 backend=BACKEND_CONN_URI,</span><br><span class="line">                 include=[<span class="string">'celery.tasks'</span>]</span><br><span class="line">                 )</span><br><span class="line"></span><br><span class="line"><span class="comment"># tasks.py 中定义任务队列</span></span><br><span class="line"><span class="keyword">from</span> kombu <span class="keyword">import</span> Queue</span><br><span class="line"></span><br><span class="line">CELERY_TIMEZONE=<span class="string">'Asia/Shanghai'</span></span><br><span class="line"></span><br><span class="line">celery_app.conf.task_queues = (</span><br><span class="line">    Queue(<span class="string">"task_a"</span>, routing_key=<span class="string">'default'</span>),</span><br><span class="line">    Queue(<span class="string">"task_b"</span>, routing_key=<span class="string">'default'</span>),</span><br><span class="line">    Queue(<span class="string">"task_c"</span>, routing_key=<span class="string">'default'</span>)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">CELERY_ROUTES = (</span><br><span class="line">   [</span><br><span class="line">     <span class="comment"># 将 task_a 任务分配至队列 task_a</span></span><br><span class="line">       (<span class="string">"remote_proj.tasks.task_a"</span>, &#123;<span class="string">"queue"</span>: <span class="string">"task_a"</span>&#125;), </span><br><span class="line">     <span class="comment"># 将 task_b 任务分配至队列 task_b</span></span><br><span class="line">       (<span class="string">"remote_proj.tasks.task_b"</span>, &#123;<span class="string">"queue"</span>: <span class="string">"task_b"</span>&#125;), </span><br><span class="line">     <span class="comment"># 将 task_c 任务分配至队列 task_c</span></span><br><span class="line">       (<span class="string">"remote_proj.tasks.task_c"</span>, &#123;<span class="string">"queue"</span>: <span class="string">"task_c"</span>&#125;)</span><br><span class="line">   ],</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">CELERY_RESULT_SERIALIZER = <span class="string">"json"</span>  <span class="comment"># 指定任务结果序列化方式</span></span><br><span class="line">CELERY_TASK_RESULT_EXPIRES = <span class="number">60</span> * <span class="number">60</span> * <span class="number">24</span>  <span class="comment"># 任务结果过期时间</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>调用远程任务</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">add_task</span><span class="params">(queue_name: str, params: dict)</span> -&gt; bool:</span></span><br><span class="line">  <span class="string">"""</span></span><br><span class="line"><span class="string">  :return task ID</span></span><br><span class="line"><span class="string">  """</span></span><br><span class="line">   	task = kcelery.send_task(<span class="string">"task_name"</span>,</span><br><span class="line">                             kwargs=params,</span><br><span class="line">                             queue=<span class="string">"my_task_queue"</span>)</span><br><span class="line">    <span class="keyword">return</span> task</span><br></pre></td></tr></table></figure>
+
+<p>之后命令行启动 Celery</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">celery</span> -A celery.worker worker -Q my_task_queue  --loglevel=<span class="literal">info</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="消费者实现"><a href="#消费者实现" class="headerlink" title="消费者实现"></a>消费者实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># worker.py </span></span><br><span class="line"><span class="comment"># 定义 celery app , broker 和 backend 写和生产者一致的</span></span><br><span class="line">celery_app = Celery(<span class="string">'celery'</span>,</span><br><span class="line">                 broker=BROKER_CONN_URI,</span><br><span class="line">                 backend=BACKEND_CONN_URI,</span><br><span class="line">                 include=[<span class="string">'celery.tasks'</span>]</span><br><span class="line">                 )</span><br><span class="line"></span><br><span class="line"><span class="comment"># 约定一致的 队列名、任务名</span></span><br><span class="line">celery_app.conf.task_queues = (</span><br><span class="line">   Queue(<span class="string">"task_a"</span>, routing_key=<span class="string">'default'</span>),</span><br><span class="line">    Queue(<span class="string">"task_b"</span>, routing_key=<span class="string">'default'</span>),</span><br><span class="line">    Queue(<span class="string">"task_c"</span>, routing_key=<span class="string">'default'</span>)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义具体的任务</span></span><br><span class="line"><span class="meta">@celery_app.task(name="task_a")</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">task_a</span><span class="params">(arg_a: str)</span> -&gt; str:</span></span><br><span class="line">		time.sleep(<span class="number">5</span>) <span class="comment"># 模拟耗时操作</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">"result"</span></span><br></pre></td></tr></table></figure>
+
+<p>启动 celery 监听队列等待任务</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">celery</span> -A ceelry.worker worker -Q scan_task --loglevel=<span class="literal">info</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4-flower"><a href="#4-flower" class="headerlink" title="4. flower"></a>4. flower</h2><p>flower 是一个可视化的监控 Celery 任务队列中任务状态的库，安装使用都比较简单。</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">pip</span> <span class="string">install flower</span></span><br><span class="line"><span class="attr">celery</span> <span class="string">flower -A celery.tasks --port=5555</span></span><br></pre></td></tr></table></figure>
+<p>之后打开浏览器看 <a href="http://0.0.0.0:5555">http://0.0.0.0:5555</a> 即可。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://zhuanlan.zhihu.com/p/43768308">https://zhuanlan.zhihu.com/p/43768308</a></p>
+
     </div>
 
     
@@ -375,7 +399,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Celery"><span class="nav-text">1. Celery</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模块架构"><span class="nav-text">模块架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-任务生产者-task-producer"><span class="nav-text">1  任务生产者 (task producer)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-任务调度器-celery-beat"><span class="nav-text">2 任务调度器 (celery beat)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-任务代理-broker"><span class="nav-text">3 任务代理 (broker)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-任务消费方-celery-worker"><span class="nav-text">4 任务消费方 (celery worker)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-结果保存"><span class="nav-text">5 结果保存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-text">安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Celery-执行异步任务"><span class="nav-text">2. Celery 执行异步任务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#消费者进行消费"><span class="nav-text">消费者进行消费</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产者发消息"><span class="nav-text">生产者发消息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-demo"><span class="nav-text">3. demo</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#消费者"><span class="nav-text">消费者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产者"><span class="nav-text">生产者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#踩坑"><span class="nav-text">踩坑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#要注意的地方"><span class="nav-text">要注意的地方</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Celery"><span class="nav-text">1. Celery</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模块架构"><span class="nav-text">模块架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-任务生产者-task-producer"><span class="nav-text">1 - 任务生产者 (task producer)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-任务调度器-celery-beat"><span class="nav-text">2 - 任务调度器 (celery beat)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-任务代理-broker"><span class="nav-text">3 - 任务代理 (broker)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-任务消费方-celery-worker"><span class="nav-text">4 - 任务消费方 (celery worker)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-结果保存"><span class="nav-text">5 - 结果保存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-text">安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-本地任务调用"><span class="nav-text">2. 本地任务调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#消费者进行消费"><span class="nav-text">消费者进行消费</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生产者发消息"><span class="nav-text">生产者发消息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#踩坑"><span class="nav-text">踩坑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#要注意的地方"><span class="nav-text">要注意的地方</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-远程任务调用"><span class="nav-text">3. 远程任务调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#生产者实现"><span class="nav-text">生产者实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消费者实现"><span class="nav-text">消费者实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-flower"><span class="nav-text">4. flower</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-text">参考链接</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
