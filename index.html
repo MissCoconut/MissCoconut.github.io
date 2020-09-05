@@ -176,10 +176,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-09-03 09:38:34 / 修改时间：09:42:25" itemprop="dateCreated datePublished" datetime="2020-09-03T09:38:34+08:00">2020-09-03</time>
+              <time title="创建时间：2020-09-03 09:38:34" itemprop="dateCreated datePublished" datetime="2020-09-03T09:38:34+08:00">2020-09-03</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-05 22:40:47" itemprop="dateModified" datetime="2020-09-05T22:40:47+08:00">2020-09-05</time>
+              </span>
 
           
 
@@ -193,8 +199,8 @@
 
       
           <h1 id="0x01-背景"><a href="#0x01-背景" class="headerlink" title="0x01 背景"></a>0x01 背景</h1><p>最近的项目里遇到个奇葩需求。</p>
-<p>有一堆手机们用 USB 线连接到了一台开发机上，现在有另外一些机器，想通过网络远程连接到这些手机上，并且能直接在 shell 里执行 adb 命令。</p>
-<p>接到这个需求第一反应是<code>adb connect ip:port</code>，但仔细一想好像不太对，这种方式需要手机启用了 adb 网络调试，而且绕过设备连接的开发机直接连接设备，也不符合目前需求。</p>
+<p>有一堆手机们用 USB 线连接到了一台开发机上，现在有另外一些机器，需要通过网络远程连接到这些手机上，并且能直接连上 adb 执行命令。</p>
+<p>我第一反应是<code>adb connect ip:port</code>，但仔细一想好像不太对，这种方式需要手机开了网络调试，而且绕过开发机直接连手机，也不符合目前需求。</p>
 <p>网上搜了下，大多数 adb 远程连接指的都是通过<code>adb connect</code>的这种连接方式，而如何连接到远程机器上的 USB 设备却没有太多的资料。</p>
           <!--noindex-->
             <div class="post-button">
