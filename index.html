@@ -122,12 +122,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">6</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">7</span></a>
 
   </li>
   </ul>
@@ -149,6 +149,139 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://misscoconut.github.io/2021/02/13/%E6%9C%9F%E6%9D%83%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="MissCoconut">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="椰子小姐的笔记本">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="2021/02/13/%E6%9C%9F%E6%9D%83%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">期权学习笔记</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-02-13 22:42:54 / 修改时间：22:54:58" itemprop="dateCreated datePublished" datetime="2021-02-13T22:42:54+08:00">2021-02-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="一、期权的定义与特点"><a href="#一、期权的定义与特点" class="headerlink" title="一、期权的定义与特点"></a>一、期权的定义与特点</h1><h2 id="1-期权的定义"><a href="#1-期权的定义" class="headerlink" title="1. 期权的定义"></a>1. 期权的定义</h2><p>期权合约是赋予持有者拥有在<strong>将来某一时间</strong>，以某一<strong>确定的价格</strong>购买/出售标的资产的权利。</p>
+<p>对于期权合约的买方来说，他有相应的<strong>权利</strong>，而没有<strong>义务</strong>；</p>
+<p>对于期权合约的卖方来说，他有相应的<strong>义务</strong>，而没有<strong>权利</strong>。</p>
+<p>期权买卖的双方权利与义务并不对等，在合约到期时，买方拥有行权或放弃行权的权利；而卖方有义务去满足买方行权的需求，却没有权利要求买方行权或放弃。</p>
+<p>可以将期权理解成保险合同，买方是投保人，卖方是保险公司，买方向卖方支付一笔保费（权利金），有权利要求卖方进行一定的赔偿，而卖方有义务去满足买方的赔偿需求。</p>
+<h2 id="2-主要特点"><a href="#2-主要特点" class="headerlink" title="2. 主要特点"></a>2. 主要特点</h2><ul>
+<li><p>保留有利的价格变动，去掉不利的风险；</p>
+</li>
+<li><p>理论上收益可以无上限，损失可控；</p>
+<p>以买入 CALL 为例，标的资产价格 &gt; 行权价时，收益无上限；标的资产价格 &lt; 行权价时，不行权，损失权利金。</p>
+</li>
+</ul>
+<h2 id="3-期权要素"><a href="#3-期权要素" class="headerlink" title="3. 期权要素"></a>3. 期权要素</h2><p>一份期权合约通常有以下几个要素构成：</p>
+<ul>
+<li>标的资产 Underlying asset : 这份期权合约交易的是啥，股票还是基金，期货还是现货…；</li>
+<li>头寸：合约的买方 - 多头 long position；合约的卖方 - 空头 short position；</li>
+<li>方向：看涨期权 CALL ；看跌期权 PUT；</li>
+<li>合约期限 maturity：期权合约啥时候到期；</li>
+<li>行权价 strike price ：买卖双方约定好的标的资产交易价格；</li>
+<li>权利金 premium：买方支付给卖方购买合约的费用；</li>
+<li>合约规模 size：交易的标的资产有多少，100 股 / 1 吨白糖 / … 。</li>
+</ul>
+<p><strong>划重点</strong>：</p>
+<img src="https://tva1.sinaimg.cn/large/008eGmZEly1gnman7sv4pj30ss05kab0.jpg" alt="image-20210213225058541" style="zoom:67%;" />
+
+<h1 id="二、期权的分类和到期损益"><a href="#二、期权的分类和到期损益" class="headerlink" title="二、期权的分类和到期损益"></a>二、期权的分类和到期损益</h1><h2 id="1-期权的分类"><a href="#1-期权的分类" class="headerlink" title="1. 期权的分类"></a>1. 期权的分类</h2><p>常见的期权分类：</p>
+<img src="https://tva1.sinaimg.cn/large/008eGmZEly1gnmaqgucrwj30mw06i3zf.jpg" alt="image-20210213225407872" style="zoom:67%;" />
+
+<p>交易者权利两种期权比较好理解；</p>
+<p>交割时限行中，欧式期权规定只有在到期时才能进行交割，而美式期权允许在到期日前任意时间点进行交割，百慕大期权的交割时限为约定好的一系列时间段；</p>
+<p>执行价格主要与期权的时间价值和内在价值有关，这里暂时略，后边细说。</p>
+<p>按交易品种的不同，期权还可分为常见的股票期权、期货期权、股指期权…。</p>
+<h2 id="2-到期损益"><a href="#2-到期损益" class="headerlink" title="2. 到期损益"></a>2. 到期损益</h2><h3 id="a-看涨期权"><a href="#a-看涨期权" class="headerlink" title="a. 看涨期权"></a>a. 看涨期权</h3><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gnl6yr946xj30jw0ei40u.jpg" alt="image-20210212235808100" style="zoom:67%;" />
+
+<p>以 AAPL 的看涨期权为例，简单计算一下合约到期时多头和空头的损益情况。</p>
+<p>当前苹果每股报价 $134，1 周后到期，行权价格为 $130 的看涨期权合约报价为 $5.16 / 股。</p>
+<ul>
+<li>多头损益情况</li>
+</ul>
+<p>假设本金为 $ 2000，选择买入 4 张看涨期权，期初时需要支付的权利金约为 $2000。</p>
+<p>当正股价格 &gt;$130 时，收益为 (正股价格 - $130) * 400 股 - $2000 权利金 ，对比仅持有 14 股正股，杠杆效应明显；</p>
+<p>当正股价格 =$130 时，选择不行权，亏损权利金 $2000。；</p>
+<p>当正股价格 &lt;$130 时，选择不行权，亏损权利金 $2000。</p>
+<ul>
+<li>空头损益情况</li>
+</ul>
+<p>假设期初卖出 4 张看涨期权，那么收到权利金 $2000。</p>
+<p>当正股价格 &gt;$130 时，对手方选择行权，亏损为 (正股价格-$130) * 400 股 + $2000 权利金，空头有义务以低于正股股价的价格卖出股票；</p>
+<p>当正股价格 =$130 时，收益为 $2000 权利金；</p>
+<p>当正股价格 &lt;$130 时，收益为 $2000 权利金。</p>
+<p><strong>划重点</strong>：<u>裸卖看涨期权风险极大，当正股价格暴涨时，可能出现无下限的亏损！</u></p>
+<h3 id="b-看跌期权"><a href="#b-看跌期权" class="headerlink" title="b. 看跌期权"></a>b. 看跌期权</h3><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gnl810plg5j30ju0eq76o.jpg" alt="image-20210213003454872" style="zoom:67%;" />
+
+<p>还是以苹果的期权举例，1 周后到期，行权价为 $150 的看跌期权，报价 $16.18 / 股。</p>
+<ul>
+<li>多头损益情况</li>
+</ul>
+<p>假设本金还是 $2000，买入了 1 份看跌期权，期初支付权利金 $1618。</p>
+<p>当正股价格 &gt;$150 时，选择不行权，亏损权利金 $1618;</p>
+<p>当正股价格 =$150 时，选择不行权，亏损权利金 $1618;</p>
+<p>当正股价格 &lt;$150 时，此时行权，盈利为($150 - 正股价格)*100股 - $1618 权利金，正股越跌越赚钱。</p>
+<ul>
+<li>空头损益情况</li>
+</ul>
+<p>空头期初卖出 1 张看跌期权，收到权利金 $1618。</p>
+<p>当正股价格 &gt;$150 时，对手方不行权，盈利权利金 $1618;</p>
+<p>当正股价格 =$150 时，对手方不行权，盈利权利金 $1618;</p>
+<p>当正股价格 &lt;$150 时，此时对手方选择行权，亏损为(正股价格 - $150)*100股 + $1618 权利金，空头有义务以正股价格买入股票。</p>
+<p>卖 PUT 的操作比喻成保险非常形象，空头保股价为多少，当股价涨超一个价格时，空头将以高于正股股价的价格买入股票。</p>
+<p>学习到这里，才发现现在的交易软件都很智能了～ 已经给投资者画好了损益图～</p>
+<img src="https://tva1.sinaimg.cn/large/008eGmZEly1gnl8p9xpjtj30ja0e8dh2.jpg" alt="image-20210213005813878" style="zoom:67%;" />
+
+<h1 id="未完待续～"><a href="#未完待续～" class="headerlink" title="未完待续～"></a>未完待续～</h1><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li>《金融工程概论》对外经贸大学，<a href="https://www.icourse163.org/course/UIBE-1206446827?tid=1206784243">https://www.icourse163.org/course/UIBE-1206446827?tid=1206784243</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -673,14 +806,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -725,7 +858,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
