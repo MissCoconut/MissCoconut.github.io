@@ -20,20 +20,21 @@
     var CONFIG = {"hostname":"misscoconut.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="一、期权的定义与特点1. 期权的定义期权合约是赋予持有者拥有在将来某一时间，以某一确定的价格购买&#x2F;出售标的资产的权利。 对于期权合约的买方来说，他有相应的权利，而没有义务； 对于期权合约的卖方来说，他有相应的义务，而没有权利。 期权买卖的双方权利与义务并不对等，在合约到期时，买方拥有行权或放弃行权的权利；而卖方有义务去满足买方行权的需求，却没有权利要求买方行权或放弃。">
+  <meta name="description" content="一、期权概念与基础知识1、期权的定义与特点1.1 期权的定义期权合约是赋予持有者拥有在将来某一时间，以某一确定的价格购买&#x2F;出售标的资产的权利。 对于期权合约的买方来说，他有相应的权利，而没有义务； 对于期权合约的卖方来说，他有相应的义务，而没有权利。 期权买卖的双方权利与义务并不对等，在合约到期时，买方拥有行权或放弃行权的权利；而卖方有义务去满足买方行权的需求，却没有权利要求买方行权或放弃。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="期权学习笔记">
 <meta property="og:url" content="https://misscoconut.github.io/2021/02/13/%E6%9C%9F%E6%9D%83%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="椰子小姐的笔记本">
-<meta property="og:description" content="一、期权的定义与特点1. 期权的定义期权合约是赋予持有者拥有在将来某一时间，以某一确定的价格购买&#x2F;出售标的资产的权利。 对于期权合约的买方来说，他有相应的权利，而没有义务； 对于期权合约的卖方来说，他有相应的义务，而没有权利。 期权买卖的双方权利与义务并不对等，在合约到期时，买方拥有行权或放弃行权的权利；而卖方有义务去满足买方行权的需求，却没有权利要求买方行权或放弃。">
+<meta property="og:description" content="一、期权概念与基础知识1、期权的定义与特点1.1 期权的定义期权合约是赋予持有者拥有在将来某一时间，以某一确定的价格购买&#x2F;出售标的资产的权利。 对于期权合约的买方来说，他有相应的权利，而没有义务； 对于期权合约的卖方来说，他有相应的义务，而没有权利。 期权买卖的双方权利与义务并不对等，在合约到期时，买方拥有行权或放弃行权的权利；而卖方有义务去满足买方行权的需求，却没有权利要求买方行权或放弃。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gnman7sv4pj30ss05kab0.jpg">
 <meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gnmaqgucrwj30mw06i3zf.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gnn4ultp2oj30q00iuqe9.jpg">
 <meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gnl6yr946xj30jw0ei40u.jpg">
 <meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gnl810plg5j30ju0eq76o.jpg">
 <meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gnl8p9xpjtj30ja0e8dh2.jpg">
 <meta property="article:published_time" content="2021-02-13T14:42:54.000Z">
-<meta property="article:modified_time" content="2021-02-13T15:56:36.611Z">
+<meta property="article:modified_time" content="2021-02-14T12:13:34.014Z">
 <meta property="article:author" content="MissCoconut">
 <meta property="article:tag" content="金融&amp;理财">
 <meta name="twitter:card" content="summary">
@@ -187,10 +188,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-02-13 22:42:54 / 修改时间：23:56:36" itemprop="dateCreated datePublished" datetime="2021-02-13T22:42:54+08:00">2021-02-13</time>
+              <time title="创建时间：2021-02-13 22:42:54" itemprop="dateCreated datePublished" datetime="2021-02-13T22:42:54+08:00">2021-02-13</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-02-14 20:13:34" itemprop="dateModified" datetime="2021-02-14T20:13:34+08:00">2021-02-14</time>
+              </span>
 
           
 
@@ -203,21 +210,21 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="一、期权的定义与特点"><a href="#一、期权的定义与特点" class="headerlink" title="一、期权的定义与特点"></a>一、期权的定义与特点</h1><h2 id="1-期权的定义"><a href="#1-期权的定义" class="headerlink" title="1. 期权的定义"></a>1. 期权的定义</h2><p>期权合约是赋予持有者拥有在<strong>将来某一时间</strong>，以某一<strong>确定的价格</strong>购买/出售标的资产的权利。</p>
+        <h1 id="一、期权概念与基础知识"><a href="#一、期权概念与基础知识" class="headerlink" title="一、期权概念与基础知识"></a>一、期权概念与基础知识</h1><h2 id="1、期权的定义与特点"><a href="#1、期权的定义与特点" class="headerlink" title="1、期权的定义与特点"></a>1、期权的定义与特点</h2><h3 id="1-1-期权的定义"><a href="#1-1-期权的定义" class="headerlink" title="1.1 期权的定义"></a>1.1 期权的定义</h3><p>期权合约是赋予持有者拥有在<strong>将来某一时间</strong>，以某一<strong>确定的价格</strong>购买/出售标的资产的权利。</p>
 <p>对于期权合约的买方来说，他有相应的<strong>权利</strong>，而没有<strong>义务</strong>；</p>
 <p>对于期权合约的卖方来说，他有相应的<strong>义务</strong>，而没有<strong>权利</strong>。</p>
 <p>期权买卖的双方权利与义务并不对等，在合约到期时，买方拥有行权或放弃行权的权利；而卖方有义务去满足买方行权的需求，却没有权利要求买方行权或放弃。</p>
 <a id="more"></a>
 
 <p>可以将期权理解成保险合同，买方是投保人，卖方是保险公司，买方向卖方支付一笔保费（权利金），有权利要求卖方进行一定的赔偿，而卖方有义务去满足买方的赔偿需求。</p>
-<h2 id="2-主要特点"><a href="#2-主要特点" class="headerlink" title="2. 主要特点"></a>2. 主要特点</h2><ul>
+<h3 id="1-2-主要特点"><a href="#1-2-主要特点" class="headerlink" title="1.2 主要特点"></a>1.2 主要特点</h3><ul>
 <li><p>保留有利的价格变动，去掉不利的风险；</p>
 </li>
 <li><p>理论上收益可以无上限，损失可控；</p>
 <p>以买入 CALL 为例，标的资产价格 &gt; 行权价时，收益无上限；标的资产价格 &lt; 行权价时，不行权，损失权利金。</p>
 </li>
 </ul>
-<h2 id="3-期权要素"><a href="#3-期权要素" class="headerlink" title="3. 期权要素"></a>3. 期权要素</h2><p>一份期权合约通常有以下几个要素构成：</p>
+<h3 id="1-3-期权要素"><a href="#1-3-期权要素" class="headerlink" title="1.3 期权要素"></a>1.3 期权要素</h3><p>一份期权合约通常有以下几个要素构成：</p>
 <ul>
 <li>标的资产 Underlying asset : 这份期权合约交易的是啥，股票还是基金，期货还是现货…；</li>
 <li>头寸：合约的买方 - 多头 long position；合约的卖方 - 空头 short position；</li>
@@ -230,14 +237,18 @@
 <p><strong>划重点</strong>：</p>
 <img src="https://tva1.sinaimg.cn/large/008eGmZEly1gnman7sv4pj30ss05kab0.jpg" alt="image-20210213225058541" style="zoom:67%;" />
 
-<h1 id="二、期权的分类和到期损益"><a href="#二、期权的分类和到期损益" class="headerlink" title="二、期权的分类和到期损益"></a>二、期权的分类和到期损益</h1><h2 id="1-期权的分类"><a href="#1-期权的分类" class="headerlink" title="1. 期权的分类"></a>1. 期权的分类</h2><p>常见的期权分类：</p>
+<h2 id="2、期权的分类和到期损益"><a href="#2、期权的分类和到期损益" class="headerlink" title="2、期权的分类和到期损益"></a>2、期权的分类和到期损益</h2><h3 id="2-1-期权的分类"><a href="#2-1-期权的分类" class="headerlink" title="2.1 期权的分类"></a>2.1 期权的分类</h3><p>常见的期权分类：</p>
 <img src="https://tva1.sinaimg.cn/large/008eGmZEly1gnmaqgucrwj30mw06i3zf.jpg" alt="image-20210213225407872" style="zoom:67%;" />
 
 <p>交易者权利两种期权比较好理解；</p>
 <p>交割时限行中，欧式期权规定只有在到期时才能进行交割，而美式期权允许在到期日前任意时间点进行交割，百慕大期权的交割时限为约定好的一系列时间段；</p>
 <p>执行价格主要与期权的时间价值和内在价值有关，这里暂时略，后边细说。</p>
 <p>按交易品种的不同，期权还可分为常见的股票期权、期货期权、股指期权…。</p>
-<h2 id="2-到期损益"><a href="#2-到期损益" class="headerlink" title="2. 到期损益"></a>2. 到期损益</h2><h3 id="a-看涨期权"><a href="#a-看涨期权" class="headerlink" title="a. 看涨期权"></a>a. 看涨期权</h3><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gnl6yr946xj30jw0ei40u.jpg" alt="image-20210212235808100" style="zoom:67%;" />
+<h3 id="2-2-期权的杠杆性"><a href="#2-2-期权的杠杆性" class="headerlink" title="2.2 期权的杠杆性"></a>2.2 期权的杠杆性</h3><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gnn4ultp2oj30q00iuqe9.jpg" alt="image-20210214161602526" style="zoom:50%;" />
+
+<p>期权的杠杆比率 = 期权合约价格变动幅度 / 标的资产价格变动幅度。</p>
+<p>即，AAPL 正股上涨 $1，期权合约上涨 $22.43 。由于杠杆性的存在，收益和亏损同时被放大。</p>
+<h3 id="2-3-到期损益"><a href="#2-3-到期损益" class="headerlink" title="2.3 到期损益"></a>2.3 到期损益</h3><h4 id="a-看涨期权"><a href="#a-看涨期权" class="headerlink" title="a. 看涨期权"></a>a. 看涨期权</h4><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gnl6yr946xj30jw0ei40u.jpg" alt="image-20210212235808100" style="zoom:67%;" />
 
 <p>以 AAPL 的看涨期权为例，粗略计算一下合约到期时多头和空头的大致损益情况。</p>
 <p>当前苹果每股报价 $134，1 周后到期，行权价格为 $130 的看涨期权合约报价为 $5.16 / 股。</p>
@@ -256,7 +267,7 @@
 <p>当正股价格 =$130 时，收益为 $2000 权利金；</p>
 <p>当正股价格 &lt;$130 时，收益为 $2000 权利金。</p>
 <p><strong>划重点</strong>：<u>裸卖看涨期权风险极大，当正股价格暴涨时，可能出现无下限的亏损！</u></p>
-<h3 id="b-看跌期权"><a href="#b-看跌期权" class="headerlink" title="b. 看跌期权"></a>b. 看跌期权</h3><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gnl810plg5j30ju0eq76o.jpg" alt="image-20210213003454872" style="zoom:67%;" />
+<h4 id="b-看跌期权"><a href="#b-看跌期权" class="headerlink" title="b. 看跌期权"></a>b. 看跌期权</h4><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gnl810plg5j30ju0eq76o.jpg" alt="image-20210213003454872" style="zoom:67%;" />
 
 <p>还是以苹果的期权举例，1 周后到期，行权价为 $150 的看跌期权，报价 $16.18 / 股。</p>
 <ul>
@@ -274,10 +285,17 @@
 <p>当正股价格 =$150 时，对手方不行权，盈利权利金 $1618;</p>
 <p>当正股价格 &lt;$150 时，此时对手方选择行权，亏损为(正股价格 - $150)*100股 + $1618 权利金，空头有义务以正股价格买入股票。</p>
 <p>卖 PUT 的操作比喻成保险非常形象，空头保股价为多少，当股价涨超一个价格时，空头将以高于正股股价的价格买入股票。</p>
-<p>学习到这里，才发现现在的交易软件都很智能了～ 已经给投资者画好了损益图～</p>
+<p>损益图在交易软件中可以找到，比如下图为老虎证券期权合约下单时的截图：</p>
 <img src="https://tva1.sinaimg.cn/large/008eGmZEly1gnl8p9xpjtj30ja0e8dh2.jpg" alt="image-20210213005813878" style="zoom:67%;" />
 
-<h1 id="未完待续～"><a href="#未完待续～" class="headerlink" title="未完待续～"></a>未完待续～</h1><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+
+
+<h2 id="3、时间价值和内在价值"><a href="#3、时间价值和内在价值" class="headerlink" title="3、时间价值和内在价值"></a>3、时间价值和内在价值</h2><h3 id="内在价值-Intrinsic-Value"><a href="#内在价值-Intrinsic-Value" class="headerlink" title="内在价值 Intrinsic Value"></a>内在价值 Intrinsic Value</h3><p>反映期权持有者马上执行期权可以获得的收益。</p>
+<p>根据内在价值的不同，期权又可以划分为 <strong>实值期权</strong>（in the money option，内在价值&gt;0）、<strong>平值期权</strong>（at the money option，内在价值=0）、<strong>虚值期权</strong>（out of money option，内在价值&lt;0）。</p>
+<h3 id="时间价值-Times-Value"><a href="#时间价值-Times-Value" class="headerlink" title="时间价值 Times Value"></a>时间价值 Times Value</h3><p>即期权费减去期权的内在价值后的剩余部分。反映了期权合约购买者对资产价格波动的不确定性付出的代价。</p>
+<p>资产价格波动越高，期权的时间价值越高。美式期权的时间价值不低于其内在价值。</p>
+<h2 id="4、希腊字母"><a href="#4、希腊字母" class="headerlink" title="4、希腊字母"></a>4、希腊字母</h2><p>#todo</p>
+<h3 id="Delta"><a href="#Delta" class="headerlink" title="Delta"></a>Delta</h3><h3 id="Gamma"><a href="#Gamma" class="headerlink" title="Gamma"></a>Gamma</h3><h3 id="Vega"><a href="#Vega" class="headerlink" title="Vega"></a>Vega</h3><h3 id="Rho"><a href="#Rho" class="headerlink" title="Rho"></a>Rho</h3><h3 id="Theta"><a href="#Theta" class="headerlink" title="Theta"></a>Theta</h3><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
 <li>《金融工程概论》对外经贸大学，<a href="https://www.icourse163.org/course/UIBE-1206446827?tid=1206784243">https://www.icourse163.org/course/UIBE-1206446827?tid=1206784243</a></li>
 </ul>
 
@@ -394,7 +412,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、期权的定义与特点"><span class="nav-text">一、期权的定义与特点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-期权的定义"><span class="nav-text">1. 期权的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-主要特点"><span class="nav-text">2. 主要特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-期权要素"><span class="nav-text">3. 期权要素</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、期权的分类和到期损益"><span class="nav-text">二、期权的分类和到期损益</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-期权的分类"><span class="nav-text">1. 期权的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-到期损益"><span class="nav-text">2. 到期损益</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-看涨期权"><span class="nav-text">a. 看涨期权</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-看跌期权"><span class="nav-text">b. 看跌期权</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#未完待续～"><span class="nav-text">未完待续～</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、期权概念与基础知识"><span class="nav-text">一、期权概念与基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、期权的定义与特点"><span class="nav-text">1、期权的定义与特点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-期权的定义"><span class="nav-text">1.1 期权的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-主要特点"><span class="nav-text">1.2 主要特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-期权要素"><span class="nav-text">1.3 期权要素</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、期权的分类和到期损益"><span class="nav-text">2、期权的分类和到期损益</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-期权的分类"><span class="nav-text">2.1 期权的分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-期权的杠杆性"><span class="nav-text">2.2 期权的杠杆性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-到期损益"><span class="nav-text">2.3 到期损益</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-看涨期权"><span class="nav-text">a. 看涨期权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-看跌期权"><span class="nav-text">b. 看跌期权</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、时间价值和内在价值"><span class="nav-text">3、时间价值和内在价值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内在价值-Intrinsic-Value"><span class="nav-text">内在价值 Intrinsic Value</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间价值-Times-Value"><span class="nav-text">时间价值 Times Value</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、希腊字母"><span class="nav-text">4、希腊字母</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Delta"><span class="nav-text">Delta</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gamma"><span class="nav-text">Gamma</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vega"><span class="nav-text">Vega</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rho"><span class="nav-text">Rho</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Theta"><span class="nav-text">Theta</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
